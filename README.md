@@ -7,7 +7,7 @@
   </p>
 
   <h3>
-    👉 <a href="https://seanwong17.github.io/Future-Style-Periodic-Table/">点击进入：沉浸式体验 (Live Demo)</a> 👈
+    👉 <a href="https://88lin.github.io/Periodic-table-web">点击进入：沉浸式体验 (Live Demo)</a> 👈
   </h3>
 
   <p>
