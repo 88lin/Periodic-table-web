@@ -1,22 +1,28 @@
-<div align="center">
-  <h1>⚛️ Future Style Periodic Table</h1>
-  <h3>交互式未来风格元素周期表 · 沉浸式化学科普</h3>
+<h1>⚛️ Future Style Periodic Table</h1>
+  <h3>交互式未来风格元素周期表 · 沉浸式化学科普 · 中英文双语支持</h3>
   
   <p>
     118 种元素，宇宙的 5%，尽在指尖绽放。
+  </p>
+
+  <p>
+    <a href="https://github.com/ruanyf/weekly/blob/master/docs/issue-383.md">
+        <img src="https://img.shields.io/badge/科技爱好者周刊-第383期推荐-ff69b4?style=flat-square&logo=rss" alt="Tech Enthusiast Weekly">
+    </a>
+    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+    <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
+    <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
+    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
   </p>
 
   <h3>
     👉 <a href="https://88lin.github.io/Periodic-table-web">点击进入：沉浸式体验 (Live Demo)</a> 👈
   </h3>
 
-  <p>
-    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
-    <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
-    <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
-    <img src="https://img.shields.io/badge/Responsive-Yes-blueviolet?style=flat-square" alt="Responsive">
-  </p>
+  <h4>
+    📖 <a href="README_en.md">English Version / 英文版</a>
+  </h4>
+
 </div>
 
 ---
@@ -27,7 +33,7 @@
 
 项目涵盖全部 **118 种化学元素**，包含原子序数、相对原子质量、电子排布、同位素、化合价等详尽数据，并支持多维度热力图可视化与 3D 原子结构模拟，是学习化学知识与探索前端技术的绝佳实践。
 
-> **🌟 亮点：** 点击任意元素，即可进入沉浸式详情页，拖拽旋转 3D 原子模型，感受电子云的轨道之美。
+> **🌟 亮点：** 点击任意元素，即可进入沉浸式详情页，拖拽旋转 3D 原子模型，感受电子云的轨道之美。支持中英文双语切换，满足全球用户需求。
 
 ---
 
@@ -37,6 +43,7 @@
 - **赛博朋克美学**：深色背景搭配动态网格粒子，营造科技感十足的沉浸氛围。
 - **霓虹分类高亮**：10 大元素分类采用独特配色，悬停时边框发光流转。
 - **全响应式适配**：从 4K 桌面到移动端，均有优雅的布局表现（含横屏提示）。
+- **双语支持**：一键切换中文/英文界面，满足不同语言用户的需求。
 
 ### 📊 多维度数据可视化
 - **热力图模式**：一键切换原子半径、电负性、电离能、熔点、沸点的色谱分布。
@@ -106,6 +113,7 @@ Future-Style-Periodic-Table/
 ├── main.js              # 逻辑代码
 ├── styles.css           # 样式文件
 ├── README.md            # 项目说明
+├── README_en.md         # 项目说明（英文版）
 └── LICENSE              # MIT 开源协议
 ```
 
