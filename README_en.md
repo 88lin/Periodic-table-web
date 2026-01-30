@@ -7,9 +7,6 @@
   </p>
 
   <p>
-    <a href="https://github.com/ruanyf/weekly/blob/master/docs/issue-383.md">
-        <img src="https://img.shields.io/badge/Tech%20Enthusiast%20Weekly-Issue%20383%20Featured-ff69b4?style=flat-square&logo=rss" alt="Tech Enthusiast Weekly">
-    </a>
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
@@ -17,7 +14,7 @@
   </p>
 
   <h3>
-    👉 <a href="https://seanwong17.github.io/Future-Style-Periodic-Table/">Click to Enter: Immersive Experience (Live Demo)</a> 👈
+    👉 <a href="https://88lin.github.io/Periodic-table-web">Click to Enter: Immersive Experience (Live Demo)</a> 👈
   </h3>
 
 </div>
