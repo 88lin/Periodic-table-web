@@ -131,7 +131,7 @@ Thanks to the pure static webpage design, this project has excellent portability
 
 The inspiration for this project comes from sharing by online creators, and we express our sincere thanks!
 
-- **Original Inspiration**: [Douyin Video Link]
+- **Original Inspiration**: [Douyin Video Link](https://www.douyin.com/video/7575067444734622385)
 - **Data Reference**: Element data compiled from public chemistry databases
 
 > *If you are the original author and wish to modify the attribution method, please submit an Issue or contact me at any time.*
