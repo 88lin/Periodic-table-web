@@ -47,6 +47,7 @@ The project covers all **118 chemical elements**, including detailed data such a
 ### 🔬 3D Atomic Structure Simulation
 - **CSS 3D Orbital Model**: Real-time rendering of electron shells and rotating electrons based on electron configuration algorithms.
 - **Gesture Interaction**: Support for mouse drag/touch swipe, 360° rotation to observe atomic structure.
+- **🆕 Expanded View**: Click the icon on the atomic model to enter a standalone full-screen view, supporting **scroll-to-zoom** for detailed electron shell observation.
 - **Detailed Data Cards**: Display electron configuration formulas, layered electron counts, isotope stability, common oxidation states, etc.
 
 ---
@@ -61,8 +62,8 @@ The project covers all **118 chemical elements**, including detailed data such a
 
 <table>
   <tr>
-    <th width="58%">Element Detail Card</th>
-    <th width="42%">3D Atomic Model</th>
+    <th width="54%">Element Detail Card</th>
+    <th width="46%">3D Atomic Model</th>
   </tr>
   <tr>
     <td valign="top"><img src="screenshots/detail.png" alt="Element Card" width="100%"></td>
@@ -125,12 +126,13 @@ Thanks to the pure static webpage design, this project has excellent portability
 
 ## 🤝 Credits
 
-The inspiration for this project comes from sharing by online creators, and we express our sincere thanks!
+The improvement of this project is inseparable from the support of the community. Special thanks to:
 
+- **Code Contribution**: Thanks to [Melody Young (@keepwow)](https://github.com/keepwow) for providing the English localization and internationalization support.
 - **Original Inspiration**: [Douyin Video Link](https://www.douyin.com/video/7575067444734622385)
-- **Data Reference**: Element data compiled from public chemistry databases
+- **Data Reference**: Element data compiled from public chemistry databases.
 
-> *If you are the original author and wish to modify the attribution method, please submit an Issue or contact me at any time.*
+> *If you wish to contribute or modify the attribution, please feel free to submit a Pull Request or Issue.*
 
 ---
 

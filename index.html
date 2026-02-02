@@ -102,6 +102,11 @@
         <div class="hologram-card">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div class="atom-visualizer" id="atomWrapper">
+                <button class="expand-btn" onclick="openExpandedAtom()" title="放大查看">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                    </svg>
+                </button>
                 <div class="atom-container" id="atomContainer"></div>
                 <div class="visualizer-hint" id="visualizer-hint">拖拽旋转视角</div>
             </div>
@@ -140,6 +145,24 @@
                     <h3 id="isotopes-label">同位素 (● 稳定)</h3>
                     <div class="isotope-tags" id="m-isotopes"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 放大原子视图弹窗 -->
+    <div class="expanded-atom-overlay" id="expandedAtomModal">
+        <div class="expanded-atom-card">
+            <span class="close-btn" onclick="closeExpandedAtom()">&times;</span>
+            <div class="expanded-atom-header">
+                <span class="expanded-atom-symbol" id="expanded-symbol">Fe</span>
+                <span class="expanded-atom-name" id="expanded-name">铁 Iron</span>
+            </div>
+            <div class="expanded-atom-wrapper" id="expandedAtomWrapper">
+                <div class="expanded-atom-container" id="expandedAtomContainer"></div>
+            </div>
+            <div class="expanded-atom-info">
+                <div class="shell-legend" id="expanded-shell-legend"></div>
+                <div class="expanded-hint" id="expanded-hint">拖拽旋转 · 滚轮缩放</div>
             </div>
         </div>
     </div>

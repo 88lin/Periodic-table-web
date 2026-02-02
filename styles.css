@@ -346,6 +346,37 @@ body {
 
 .atom-visualizer:active { cursor: grabbing; }
 
+/* 放大按钮 */
+.expand-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 243, 255, 0.1);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 8px;
+    color: var(--accent-cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.expand-btn:hover {
+    background: rgba(0, 243, 255, 0.2);
+    border-color: var(--accent-cyan);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+}
+
+.expand-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
 .visualizer-hint {
     position: absolute;
     bottom: 15px;
@@ -392,6 +423,17 @@ body {
     background: var(--valence-color);
     box-shadow: 0 0 12px var(--valence-color);
     z-index: 10;
+}
+
+/* 放大视图电子样式 */
+.electron.expanded.inner {
+    width: 8px; height: 8px;
+    box-shadow: 0 0 10px var(--inner-color);
+}
+
+.electron.expanded.valence {
+    width: 12px; height: 12px;
+    box-shadow: 0 0 20px var(--valence-color);
 }
 
 .info-panel {
@@ -510,6 +552,155 @@ body {
     color: #66ff99;
 }
 
+/* === 放大原子视图弹窗 === */
+.expanded-atom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.expanded-atom-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.expanded-atom-card {
+    width: 90vw;
+    height: 90vh;
+    max-width: 900px;
+    max-height: 700px;
+    background: linear-gradient(135deg, #0a0a15, #151520);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 
+        0 0 80px rgba(0, 243, 255, 0.15),
+        inset 0 0 60px rgba(0, 243, 255, 0.02);
+}
+
+.expanded-atom-header {
+    padding: 20px 60px 20px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.expanded-atom-symbol {
+    font-size: 42px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    color: var(--accent-cyan);
+}
+
+.expanded-atom-name {
+    font-size: 20px;
+    color: #888;
+}
+
+.expanded-atom-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+    cursor: grab;
+    user-select: none;
+    background: radial-gradient(circle at center, rgba(0, 243, 255, 0.03), transparent 60%);
+    position: relative;
+    overflow: hidden;
+}
+
+.expanded-atom-wrapper:active {
+    cursor: grabbing;
+}
+
+.expanded-atom-container {
+    width: 500px;
+    height: 500px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s linear;
+}
+
+.expanded-atom-container .nucleus {
+    width: 20px;
+    height: 20px;
+    box-shadow: 0 0 40px #fff, 0 0 80px rgba(255, 255, 255, 0.5);
+}
+
+.expanded-atom-container .orbit-ring {
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.expanded-atom-info {
+    padding: 15px 25px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.shell-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.shell-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #888;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+}
+
+.shell-legend-item.valence {
+    background: rgba(255, 0, 85, 0.1);
+    border: 1px solid rgba(255, 0, 85, 0.3);
+    color: #ff6699;
+}
+
+.shell-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.shell-dot.inner {
+    background: var(--inner-color);
+    box-shadow: 0 0 6px var(--inner-color);
+}
+
+.shell-dot.valence {
+    background: var(--valence-color);
+    box-shadow: 0 0 8px var(--valence-color);
+}
+
+.expanded-hint {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+}
+
 /* === 移动端横屏提示 === */
 .rotate-hint {
     display: none;
@@ -553,6 +744,25 @@ body {
     }
     .big-name {
         font-size: 20px;
+    }
+
+    /* 放大视图平板适配 */
+    .expanded-atom-card {
+        width: 95vw;
+        height: 85vh;
+    }
+    .expanded-atom-container {
+        width: 350px;
+        height: 350px;
+    }
+    .expanded-atom-header {
+        padding: 15px 50px 15px 20px;
+    }
+    .expanded-atom-symbol {
+        font-size: 36px;
+    }
+    .expanded-atom-name {
+        font-size: 18px;
     }
 }
 
@@ -685,6 +895,19 @@ body {
         box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
+    /* 移动端放大按钮 */
+    .expand-btn {
+        top: 10px;
+        left: 10px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .expand-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
     .atom-visualizer {
         height: 180px;
         min-height: 180px;
@@ -798,6 +1021,55 @@ body {
         font-size: 11px;
         padding: 3px 8px;
     }
+
+    /* 放大视图移动端适配 */
+    .expanded-atom-overlay {
+        padding: 0;
+    }
+
+    .expanded-atom-card {
+        width: 100%;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+    }
+
+    .expanded-atom-header {
+        padding: 15px 50px 15px 15px;
+    }
+
+    .expanded-atom-symbol {
+        font-size: 32px;
+    }
+
+    .expanded-atom-name {
+        font-size: 16px;
+    }
+
+    .expanded-atom-container {
+        width: 280px;
+        height: 280px;
+    }
+
+    .expanded-atom-info {
+        padding: 12px 15px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .shell-legend {
+        gap: 8px;
+    }
+
+    .shell-legend-item {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .expanded-hint {
+        font-size: 11px;
+    }
 }
 
 /* === 超小屏幕 (小于400px) === */
@@ -832,6 +1104,11 @@ body {
 
     .props-grid {
         grid-template-columns: 1fr;
+    }
+
+    .expanded-atom-container {
+        width: 240px;
+        height: 240px;
     }
 }
 
@@ -888,5 +1165,40 @@ body {
     .props-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 6px;
+    }
+
+    /* 放大视图横屏适配 */
+    .expanded-atom-card {
+        flex-direction: row;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .expanded-atom-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 21, 0.9);
+        z-index: 10;
+    }
+
+    .expanded-atom-wrapper {
+        flex: 1;
+        padding-top: 60px;
+    }
+
+    .expanded-atom-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 21, 0.9);
+    }
+
+    .expanded-atom-container {
+        width: 300px;
+        height: 300px;
     }
 }

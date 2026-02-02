@@ -1,4 +1,5 @@
-<h1>⚛️ Future Style Periodic Table</h1>
+<div align="center">
+  <h1>⚛️ Future Style Periodic Table</h1>
   <h3>交互式未来风格元素周期表 · 沉浸式化学科普 · 中英文双语支持</h3>
   
   <p>
@@ -49,7 +50,8 @@
 
 ### 🔬 3D 原子结构模拟
 - **CSS 3D 轨道模型**：基于电子排布算法实时渲染电子层与旋转电子。
-- **手势交互**：支持鼠标拖拽 / 触屏滑动，360° 旋转观察原子结构。
+- **交互升级**：支持鼠标拖拽 / 触屏滑动，360° 旋转观察原子结构。
+- **🆕 独立放大视图**：点击模型左上角图标可进入全屏模式，支持**滚轮缩放**查看电子层细节，沉浸感倍增。
 - **详尽数据卡片**：展示电子排布式、分层电子数、同位素稳定性、常见化合价等。
 
 ---
@@ -64,8 +66,8 @@
 
 <table>
   <tr>
-    <th width="58%">元素详情卡片</th>
-    <th width="42%">3D 原子模型</th>
+    <th width="54%">元素详情卡片</th>
+    <th width="46%">3D 原子模型</th>
   </tr>
   <tr>
     <td valign="top"><img src="screenshots/detail.png" alt="Element Card" width="100%"></td>
@@ -128,13 +130,13 @@ Future-Style-Periodic-Table/
 
 ## 🤝 致谢 (Credits)
 
-本项目的灵感来源于网络创作者的分享，在此表示由衷的感谢！
+本项目的完善离不开社区的支持，特别感谢以下贡献者：
 
-- **原创灵感**：[抖音视频链接](https://www.douyin.com/video/7575067444734622385)
+- **代码贡献**：感谢 [Melody Young (@keepwow)](https://github.com/keepwow) 提供的英文适配与国际化支持。
+- **原始灵感**：[抖音视频链接](https://www.douyin.com/video/7575067444734622385)
 - **数据参考**：元素数据基于公开的化学数据库整理
 
-> *如果您是原作者并希望修改署名方式，请随时提交 Issue 或联系我。*
-
+> *如果您希望参与贡献或修改署名方式，请随时提交 Pull Request 或 Issue。*
 ---
 
 ## 📄 开源协议 (License)

@@ -3,6 +3,8 @@ const table = document.getElementById('table');
 const legend = document.getElementById('legend');
 const modal = document.getElementById('modal');
 const atomContainer = document.getElementById('atomContainer');
+const expandedAtomModal = document.getElementById('expandedAtomModal');
+const expandedAtomContainer = document.getElementById('expandedAtomContainer');
 
 // === 状态变量 ===
 let currentActiveCategory = null;
@@ -11,6 +13,14 @@ let rotX = 0;
 let rotY = 0;
 let isDragging = false;
 let lastMouseX, lastMouseY;
+
+// 放大视图状态
+let expandedRotX = 0;
+let expandedRotY = 0;
+let expandedScale = 1;
+let isExpandedDragging = false;
+let expandedLastMouseX, expandedLastMouseY;
+let currentElementZ = 1; // 当前显示的元素原子序数
 
 // === 语言相关辅助函数 ===
 function getLocalizedText(key, lang = currentLanguage) {
@@ -49,8 +59,13 @@ function getLocalizedText(key, lang = currentLanguage) {
             'layers': '分层',
             'no-data': '暂无数据',
             'drag-rotate': '拖拽旋转视角',
-        'rotate-hint': '💡 横屏查看效果更佳',
-        'periodic-table-title': '元素周期表'
+            'rotate-hint': '💡 横屏查看效果更佳',
+            'periodic-table-title': '元素周期表',
+            'expanded-hint': '拖拽旋转 · 滚轮缩放',
+            'shell-prefix': '第',
+            'shell-suffix': '层',
+            'electrons-unit': '个电子',
+            'valence-shell': '(价电子层)'
         },
         en: {
             'alkali-metal': 'Alkali Metal',
@@ -86,8 +101,13 @@ function getLocalizedText(key, lang = currentLanguage) {
             'layers': 'Layers',
             'no-data': 'No data',
             'drag-rotate': 'Drag to rotate view',
-        'rotate-hint': '💡 Better view in landscape mode',
-        'periodic-table-title': 'Periodic Table'
+            'rotate-hint': '💡 Better view in landscape mode',
+            'periodic-table-title': 'Periodic Table',
+            'expanded-hint': 'Drag to rotate · Scroll to zoom',
+            'shell-prefix': 'Shell ',
+            'shell-suffix': '',
+            'electrons-unit': ' electrons',
+            'valence-shell': '(Valence)'
         }
     };
     return translations[lang][key] || key;
@@ -188,8 +208,6 @@ function renderTable() {
 }
 
 // === 获取元素在周期表中的位置 ===
-
-// === 获取元素在周期表中的位置 ===
 function getPos(n) {
     if (n == 1) return [1, 1];
     if (n == 2) return [1, 18];
@@ -260,6 +278,7 @@ function init() {
     renderLegend();
     renderTable();
     initDragControl();
+    initExpandedDragControl();
     initSearch();
     initKeyboard();
 }
@@ -414,22 +433,33 @@ function setLanguage(lang) {
             showModal(currentElement);
         }
     }
+
+    // 如果放大视图打开，更新其内容
+    if (expandedAtomModal.classList.contains('open')) {
+        updateExpandedAtomInfo();
+    }
 }
 
 // === 渲染3D原子模型 ===
-function render3DAtom(Z) {
-    atomContainer.innerHTML = '';
+function render3DAtom(Z, container = atomContainer, scale = 1) {
+    container.innerHTML = '';
 
     const nucleus = document.createElement('div');
     nucleus.className = 'nucleus';
-    atomContainer.appendChild(nucleus);
+    if (scale !== 1) {
+        nucleus.style.width = `${12 * scale}px`;
+        nucleus.style.height = `${12 * scale}px`;
+    }
+    container.appendChild(nucleus);
 
     const { shells } = getElectronData(Z);
 
     shells.forEach((count, idx) => {
         if (count === 0) return;
         const isValence = (idx === shells.length - 1);
-        const size = 40 + (idx * 25);
+        const baseSize = scale === 1 ? 40 : 80;
+        const increment = scale === 1 ? 25 : 50;
+        const size = baseSize + (idx * increment);
 
         const orbit = document.createElement('div');
         orbit.className = 'orbit-ring';
@@ -454,11 +484,14 @@ function render3DAtom(Z) {
         for (let i = 0; i < count; i++) {
             const electron = document.createElement('div');
             electron.className = `electron ${isValence ? 'valence' : 'inner'}`;
+            if (scale !== 1) {
+                electron.classList.add('expanded');
+            }
             const angle = (360 / count) * i;
             electron.style.transform = `rotate(${angle}deg) translateX(${size / 2}px)`;
             orbit.appendChild(electron);
         }
-        atomContainer.appendChild(orbit);
+        container.appendChild(orbit);
     });
     return shells;
 }
@@ -468,6 +501,7 @@ function initDragControl() {
     const wrapper = document.getElementById('atomWrapper');
 
     wrapper.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.expand-btn')) return;
         isDragging = true;
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
@@ -490,6 +524,7 @@ function initDragControl() {
     window.addEventListener('mouseup', () => isDragging = false);
 
     wrapper.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.expand-btn')) return;
         isDragging = true;
         lastMouseX = e.touches[0].clientX;
         lastMouseY = e.touches[0].clientY;
@@ -512,8 +547,125 @@ function initDragControl() {
     window.addEventListener('touchend', () => isDragging = false);
 }
 
+// === 放大视图拖拽控制 ===
+function initExpandedDragControl() {
+    const wrapper = document.getElementById('expandedAtomWrapper');
+
+    wrapper.addEventListener('mousedown', (e) => {
+        isExpandedDragging = true;
+        expandedLastMouseX = e.clientX;
+        expandedLastMouseY = e.clientY;
+        wrapper.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isExpandedDragging) return;
+        const dx = e.clientX - expandedLastMouseX;
+        const dy = e.clientY - expandedLastMouseY;
+
+        expandedRotY += dx * 0.5;
+        expandedRotX -= dy * 0.5;
+
+        expandedAtomContainer.style.transform = `rotateX(${expandedRotX}deg) rotateY(${expandedRotY}deg) scale(${expandedScale})`;
+
+        expandedLastMouseX = e.clientX;
+        expandedLastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => {
+        isExpandedDragging = false;
+        wrapper.style.cursor = 'grab';
+    });
+
+    // 滚轮缩放
+    wrapper.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        expandedScale = Math.max(0.5, Math.min(2, expandedScale + delta));
+        expandedAtomContainer.style.transform = `rotateX(${expandedRotX}deg) rotateY(${expandedRotY}deg) scale(${expandedScale})`;
+    }, { passive: false });
+
+    // 触摸支持
+    wrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            isExpandedDragging = true;
+            expandedLastMouseX = e.touches[0].clientX;
+            expandedLastMouseY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isExpandedDragging || !expandedAtomModal.classList.contains('open')) return;
+        const dx = e.touches[0].clientX - expandedLastMouseX;
+        const dy = e.touches[0].clientY - expandedLastMouseY;
+
+        expandedRotY += dx * 0.8;
+        expandedRotX -= dy * 0.8;
+
+        expandedAtomContainer.style.transform = `rotateX(${expandedRotX}deg) rotateY(${expandedRotY}deg) scale(${expandedScale})`;
+
+        expandedLastMouseX = e.touches[0].clientX;
+        expandedLastMouseY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => isExpandedDragging = false);
+}
+
+// === 打开放大原子视图 ===
+function openExpandedAtom() {
+    expandedRotX = 0;
+    expandedRotY = 0;
+    expandedScale = 1;
+    expandedAtomContainer.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+
+    render3DAtom(currentElementZ, expandedAtomContainer, 1.8);
+    updateExpandedAtomInfo();
+    
+    expandedAtomModal.classList.add('open');
+}
+
+// === 更新放大视图信息 ===
+function updateExpandedAtomInfo() {
+    const element = elements[currentElementZ - 1];
+    document.getElementById('expanded-symbol').innerText = element.sym;
+    document.getElementById('expanded-symbol').style.color = element.cat.color;
+    document.getElementById('expanded-name').innerText = `${element.name} ${element.enName}`;
+    document.getElementById('expanded-hint').innerText = getLocalizedText('expanded-hint');
+
+    // 生成电子层图例
+    const { shells } = getElectronData(currentElementZ);
+    const legendContainer = document.getElementById('expanded-shell-legend');
+    legendContainer.innerHTML = '';
+
+    shells.forEach((count, idx) => {
+        if (count === 0) return;
+        const isValence = (idx === shells.length - 1);
+        const item = document.createElement('div');
+        item.className = `shell-legend-item ${isValence ? 'valence' : ''}`;
+        
+        const shellName = currentLanguage === 'zh' 
+            ? `${getLocalizedText('shell-prefix')}${idx + 1}${getLocalizedText('shell-suffix')}`
+            : `${getLocalizedText('shell-prefix')}${idx + 1}`;
+        
+        const valenceText = isValence ? ` ${getLocalizedText('valence-shell')}` : '';
+        
+        item.innerHTML = `
+            <span class="shell-dot ${isValence ? 'valence' : 'inner'}"></span>
+            <span>${shellName}: ${count}${getLocalizedText('electrons-unit')}${valenceText}</span>
+        `;
+        legendContainer.appendChild(item);
+    });
+}
+
+// === 关闭放大原子视图 ===
+function closeExpandedAtom() {
+    expandedAtomModal.classList.remove('open');
+    setTimeout(() => expandedAtomContainer.innerHTML = '', 300);
+}
+
 // === 显示弹窗 ===
 function showModal(data) {
+    currentElementZ = data.idx;
     rotX = 0;
     rotY = 0;
     atomContainer.style.transform = `rotateX(0deg) rotateY(0deg)`;
@@ -626,13 +778,23 @@ function initSearch() {
 // === 键盘事件 ===
 function initKeyboard() {
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape') {
+            if (expandedAtomModal.classList.contains('open')) {
+                closeExpandedAtom();
+            } else {
+                closeModal();
+            }
+        }
     });
 }
 
 // === 弹窗点击背景关闭 ===
 modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
+});
+
+expandedAtomModal.addEventListener('click', (e) => {
+    if (e.target === expandedAtomModal) closeExpandedAtom();
 });
 
 // === 启动应用 ===
