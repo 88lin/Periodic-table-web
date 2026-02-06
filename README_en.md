@@ -50,7 +50,7 @@ The project covers all **118 chemical elements**, including detailed data such a
 ### 🔬 3D Atomic Structure Simulation
 - **CSS 3D Orbital Model**: Real-time rendering of electron shells and rotating electrons based on electron configuration algorithms.
 - **Gesture Interaction**: Support for mouse drag/touch swipe, 360° rotation to observe atomic structure.
-- **🆕 Expanded View**: Click the icon on the atomic model to enter a standalone full-screen view, supporting **scroll-to-zoom** for detailed electron shell observation.
+- **Expanded View**: Click the icon on the atomic model to enter a standalone full-screen view, supporting **scroll-to-zoom** for detailed electron shell observation.
 - **Detailed Data Cards**: Display electron configuration formulas, layered electron counts, isotope stability, common oxidation states, etc.
 
 ---
@@ -107,6 +107,7 @@ Future-Style-Periodic-Table/
 │   ├── detail.png       # Element detail card
 │   └── atom3d.png       # 3D atomic model
 ├── data.js              # Data file
+├── elements-full-data.js # Data file(Periodic-Table-JSON)
 ├── index.html           # Entry file
 ├── main.js              # Logic code
 ├── styles.css           # Stylesheet
@@ -127,15 +128,24 @@ Thanks to the pure static webpage design, this project has excellent portability
 
 ---
 
+## ⚠️ Scientific Disclaimer
+
+The **3D atomic models in this project are simplified Bohr model visualizations** for educational demonstration purposes only. They **do not represent actual electron cloud probability distributions**. Real electron behavior follows quantum mechanical principles, with electrons existing as probability clouds in atomic orbitals.
+
+---
+
 ## 🤝 Credits
 
 The improvement of this project is inseparable from the support of the community. Special thanks to:
 
 - **Code Contribution**: Thanks to [Melody Young (@keepwow)](https://github.com/keepwow) for providing the English localization and internationalization support.
-- **Original Inspiration**: [Douyin Video Link](https://www.douyin.com/video/7575067444734622385)
-- **Data Reference**: Element data compiled from public chemistry databases.
 
-> *If you wish to contribute or modify the attribution, please feel free to submit a Pull Request or Issue.*
+- **Data Sources**:
+  - Primary element data from [Bowserinator/Periodic-Table-JSON](https://github.com/Bowserinator/Periodic-Table-JSON), licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+  - Oxidation states and isotope data compiled from public sources
+
+- **Original Inspiration**: [Douyin Video Link](https://www.douyin.com/video/7575067444734622385)
+  > *If you wish to contribute or modify the attribution, please feel free to submit a Pull Request or Issue.*
 
 ---
 
