@@ -37,7 +37,7 @@ body {
     background-size: 100% 100%, 40px 40px, 40px 40px;
 }
 
-/* === 导航栏区域优化 === */
+/* === 导航栏区域 === */
 .control-panel {
     display: flex;
     flex-wrap: wrap;
@@ -65,6 +65,19 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     white-space: nowrap;
+}
+
+.github-silent-link {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.3s, opacity 0.3s;
+  z-index: 10;
+}
+.github-silent-link:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .mode-group {
@@ -225,16 +238,19 @@ body {
     align-items: center;
     gap: 2px;
 }
+
 .element.placeholder .range-num {
     font-size: 11px;
     color: var(--accent-cyan);
     font-weight: bold;
 }
+
 .element.placeholder .name {
     font-size: 11px;
     opacity: 0.8;
     margin: 0;
 }
+
 .element.placeholder:hover {
     background: rgba(255, 255, 255, 0.08);
     border-style: solid;
@@ -246,7 +262,7 @@ body {
 }
 .periodic-table.heatmap-active .element .detail-val { display: block; }
 
-/* === 图例区域优化 === */
+/* === 图例区域 === */
 .legend-wrapper {
     width: 100%;
     padding: 0 10px;
@@ -261,6 +277,7 @@ body {
     max-width: 1000px;
     margin: 0 auto;
 }
+
 .legend-item {
     font-size: 12px;
     display: flex;
@@ -272,6 +289,7 @@ body {
     border: 1px solid transparent;
     transition: 0.3s;
 }
+
 .legend-item:hover { background: rgba(255,255,255,0.1); }
 .legend-item.active {
     background: rgba(255,255,255,0.2);
@@ -295,7 +313,7 @@ body {
 
 .hologram-card {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1100px;
     max-height: 90vh;
     background: linear-gradient(135deg, #1a1a20, #0a0a10);
     border: 1px solid rgba(0, 243, 255, 0.2);
@@ -306,7 +324,6 @@ body {
     position: relative;
 }
 
-/* 优化后的关闭按钮 */
 .close-btn {
     position: absolute;
     top: 15px;
@@ -331,8 +348,8 @@ body {
 }
 
 .atom-visualizer {
-    width: 35%;
-    min-width: 280px;
+    width: 30%;
+    min-width: 250px;
     background: radial-gradient(circle at center, rgba(0,243,255,0.05), transparent 70%);
     display: flex;
     justify-content: center;
@@ -346,7 +363,6 @@ body {
 
 .atom-visualizer:active { cursor: grabbing; }
 
-/* 放大按钮 */
 .expand-btn {
     position: absolute;
     top: 15px;
@@ -372,10 +388,7 @@ body {
     box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
 }
 
-.expand-btn svg {
-    width: 18px;
-    height: 18px;
-}
+.expand-btn svg { width: 18px; height: 18px; }
 
 .visualizer-hint {
     position: absolute;
@@ -386,7 +399,7 @@ body {
 }
 
 .atom-container {
-    width: 220px; height: 220px;
+    width: 200px; height: 200px;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.1s linear;
@@ -425,7 +438,6 @@ body {
     z-index: 10;
 }
 
-/* 放大视图电子样式 */
 .electron.expanded.inner {
     width: 8px; height: 8px;
     box-shadow: 0 0 10px var(--inner-color);
@@ -436,9 +448,10 @@ body {
     box-shadow: 0 0 20px var(--valence-color);
 }
 
+/* === 信息面板 === */
 .info-panel {
     flex: 1;
-    padding: 25px;
+    padding: 20px 25px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -447,51 +460,133 @@ body {
 
 .header-row {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
+    gap: 15px;
     margin-bottom: 15px;
+    padding-bottom: 15px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-right: 30px;
+    padding-right: 40px;
 }
-.big-symbol { font-size: 48px; font-weight: 700; color: var(--accent-cyan); margin-right: 15px; line-height: 1; font-family: Arial;}
-.big-name { font-size: 24px; color: #fff; font-weight: bold; }
-.category-tag {
-    margin-left: auto;
-    padding: 5px 10px;
+
+.big-symbol {
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    line-height: 1;
+    font-family: Arial, sans-serif;
+}
+
+.header-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.big-name {
+    font-size: 22px;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.en-name {
+    font-size: 14px;
+    color: #888;
+    margin-left: 8px;
+    font-weight: normal;
+}
+
+.header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-tag, .phase-tag, .block-tag {
+    padding: 4px 10px;
     border: 1px solid #444;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 4px;
+    font-size: 11px;
     color: #aaa;
     text-transform: uppercase;
-    white-space: nowrap;
 }
 
-.config-box {
-    background: rgba(0, 243, 255, 0.05);
+.phase-tag {
+    background: rgba(255,255,255,0.05);
+}
+
+.block-tag {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: rgba(0, 243, 255, 0.3);
+    color: var(--accent-cyan);
+    font-weight: bold;
+}
+
+/* === 简介 === */
+.summary-box {
+    background: rgba(255,255,255,0.02);
     padding: 12px 15px;
     border-radius: 8px;
-    margin-bottom: 20px;
-    font-family: 'Courier New', monospace;
-    flex-shrink: 0;
-}
-.config-label { font-size: 12px; color: var(--accent-cyan); margin-bottom: 5px; display: block; font-weight: bold;}
-.config-text {
-    font-size: 14px;
-    color: #e0e0e0;
-    letter-spacing: 1px;
-    word-break: break-all;
-    white-space: normal;
-    line-height: 1.5;
+    margin-bottom: 15px;
+    border-left: 3px solid rgba(0, 243, 255, 0.3);
 }
 
-.info-section {
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
-.info-section h3 {
+.summary-box p {
     font-size: 13px;
+    line-height: 1.6;
+    color: #bbb;
+}
+
+/* === 标签页导航 === */
+.tab-nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.tab-btn.active {
+    background: var(--accent-cyan);
+    color: #000;
+    font-weight: bold;
+}
+
+/* === 标签页内容 === */
+.tab-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* === 信息区块 === */
+.info-section {
+    margin-bottom: 18px;
+}
+
+.info-section h3 {
+    font-size: 12px;
     color: var(--accent-cyan);
     margin-bottom: 10px;
     text-transform: uppercase;
@@ -500,25 +595,72 @@ body {
     padding-bottom: 5px;
 }
 
+/* === 电子排布 === */
+.config-box {
+    background: rgba(0, 243, 255, 0.05);
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.config-text {
+    font-size: 14px;
+    color: #e0e0e0;
+    letter-spacing: 1px;
+    word-break: break-all;
+    line-height: 1.5;
+}
+
+.config-semantic {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.config-shell {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* === 属性网格 === */
 .props-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
+
+.props-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 .prop-item {
     background: rgba(255,255,255,0.02);
     padding: 8px 10px;
     border-radius: 6px;
     border-left: 3px solid rgba(0, 243, 255, 0.3);
 }
-.prop-item label { font-size: 11px; color: #888; display: block; margin-bottom: 3px; }
-.prop-item span { font-size: 14px; color: #fff; font-weight: 500; }
 
+.prop-item label {
+    font-size: 10px;
+    color: #888;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.prop-item span {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* === 化合价标签 === */
 .valence-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
+
 .valence-tag {
     background: linear-gradient(135deg, rgba(255,0,85,0.2), rgba(255,0,170,0.1));
     border: 1px solid rgba(255,0,85,0.4);
@@ -529,11 +671,13 @@ body {
     font-weight: 600;
 }
 
+/* === 同位素标签 === */
 .isotope-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
+
 .isotope-tag {
     background: rgba(0, 168, 255, 0.1);
     border: 1px solid rgba(0, 168, 255, 0.3);
@@ -542,23 +686,190 @@ body {
     font-size: 12px;
     color: #66ccff;
 }
+
 .isotope-tag .mass-num {
     font-size: 9px;
     vertical-align: super;
 }
+
 .isotope-stable {
     background: rgba(0, 255, 136, 0.1);
     border-color: rgba(0, 255, 136, 0.3);
     color: #66ff99;
 }
 
+/* === 外观文本 === */
+.appearance-text {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+/* === 电离能列表 === */
+.ionization-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.ionization-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 4px;
+}
+
+.ion-label {
+    font-size: 12px;
+    color: #888;
+}
+
+.ion-value {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* === 历史信息 === */
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.history-item label {
+    font-size: 12px;
+    color: #888;
+}
+
+.history-item span {
+    font-size: 13px;
+    color: #fff;
+}
+
+.source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 8px 12px;
+    background: rgba(0, 243, 255, 0.1);
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.source-link:hover {
+    background: rgba(0, 243, 255, 0.2);
+}
+
+/* === 媒体加载按钮 === */
+.media-container {
+    min-height: 100px;
+}
+
+.load-media-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 25px;
+    background: rgba(255,255,255,0.02);
+    border: 2px dashed rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: #888;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.load-media-btn:hover {
+    background: rgba(0, 243, 255, 0.05);
+    border-color: rgba(0, 243, 255, 0.3);
+    color: var(--accent-cyan);
+}
+
+.load-media-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.load-media-btn.disabled:hover {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.1);
+    color: #888;
+}
+
+.load-media-btn.loading {
+    pointer-events: none;
+    border-color: rgba(0, 243, 255, 0.5);
+    color: var(--accent-cyan);
+}
+
+.load-media-btn.loading svg {
+    animation: spin 1s linear infinite;
+}
+
+.load-media-btn.error {
+    border-color: rgba(255, 100, 100, 0.4);
+    color: #ff6666;
+    cursor: not-allowed;
+}
+
+.load-media-btn.error:hover {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255, 100, 100, 0.4);
+    color: #ff6666;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.image-display {
+    text-align: center;
+}
+
+.image-display img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: rgba(0,0,0,0.2);
+}
+
+.image-caption {
+    font-size: 11px;
+    color: #888;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+.model-viewer {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.3);
+}
+
+.no-data {
+    color: #666;
+    font-size: 13px;
+}
+
 /* === 放大原子视图弹窗 === */
 .expanded-atom-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(15px);
     z-index: 2000;
@@ -624,9 +935,7 @@ body {
     overflow: hidden;
 }
 
-.expanded-atom-wrapper:active {
-    cursor: grabbing;
-}
+.expanded-atom-wrapper:active { cursor: grabbing; }
 
 .expanded-atom-container {
     width: 500px;
@@ -715,7 +1024,7 @@ body {
     z-index: 99;
 }
 
-/* === 平板适配 (600px - 900px) === */
+/* === 平板适配 === */
 @media(max-width: 900px) {
     .hologram-card {
         flex-direction: column;
@@ -724,481 +1033,177 @@ body {
     .atom-visualizer {
         width: 100%;
         min-width: auto;
-        height: 200px;
+        height: 180px;
         border-right: none;
         border-bottom: 1px solid #333;
         flex-shrink: 0;
     }
-    .atom-container {
-        width: 180px;
-        height: 180px;
-    }
-    .props-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .info-panel {
-        padding: 20px;
-    }
-    .big-symbol {
-        font-size: 40px;
-    }
-    .big-name {
-        font-size: 20px;
-    }
-
-    /* 放大视图平板适配 */
-    .expanded-atom-card {
-        width: 95vw;
-        height: 85vh;
-    }
-    .expanded-atom-container {
-        width: 350px;
-        height: 350px;
-    }
-    .expanded-atom-header {
-        padding: 15px 50px 15px 20px;
-    }
-    .expanded-atom-symbol {
-        font-size: 36px;
-    }
-    .expanded-atom-name {
-        font-size: 18px;
-    }
+    .atom-container { width: 160px; height: 160px; }
+    .props-grid { grid-template-columns: repeat(2, 1fr); }
+    .props-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .info-panel { padding: 15px 20px; }
+    .big-symbol { font-size: 40px; }
+    .big-name { font-size: 18px; }
+    
+    .expanded-atom-card { width: 95vw; height: 85vh; }
+    .expanded-atom-container { width: 350px; height: 350px; }
 }
 
-/* === 手机端适配 (小于600px) === */
+/* === 手机端适配 === */
 @media(max-width: 600px) {
-    .rotate-hint {
-        display: block;
-    }
-
+    .rotate-hint { display: block; }
+    
     .control-panel {
         padding: 10px;
         gap: 10px;
         flex-direction: column;
         align-items: stretch;
-        margin-bottom: 10px;
     }
-
-    .title-box {
-        text-align: center;
-    }
-
-    .title-box h1 {
-        font-size: 18px;
-        letter-spacing: 1px;
-    }
-
-    .mode-group {
-        justify-content: center;
-        padding: 3px;
-        gap: 3px;
-    }
-
-    .mode-btn {
-        padding: 6px 8px;
-        font-size: 11px;
-    }
-
-    .search-box {
-        max-width: 100%;
-    }
-
-    .search-box input {
-        padding: 12px 15px;
-        font-size: 16px;
-    }
-
-    .table-wrapper {
-        padding: 5px;
-    }
-
+    
+    .title-box { text-align: center; }
+    .title-box h1 { font-size: 18px; }
+    
+    .mode-group { justify-content: center; padding: 3px; gap: 3px; }
+    .mode-btn { padding: 6px 8px; font-size: 11px; }
+    
+    .search-box { max-width: 100%; }
+    .search-box input { padding: 12px 15px; font-size: 16px; }
+    
+    .table-wrapper { padding: 5px; }
+    
     .periodic-table {
         grid-template-columns: repeat(18, 52px);
         grid-template-rows: repeat(10, 60px);
         gap: 3px;
     }
-
-    .element .atomic-number {
-        font-size: 8px;
-        top: 2px;
-        left: 3px;
-    }
-
-    .element .symbol {
-        font-size: 18px;
-        margin-top: 2px;
-    }
-
-    .element .name {
-        font-size: 9px;
-    }
-
-    .element .detail-val {
-        font-size: 7px;
-        bottom: 2px;
-        right: 3px;
-    }
-
-    .element.placeholder .range-num {
-        font-size: 9px;
-    }
-
-    .element.placeholder .name {
-        font-size: 9px;
-    }
-
-    .element:hover {
-        transform: scale(1.1) !important;
-    }
-
-    .legend-wrapper {
-        padding: 0 5px;
-        margin-bottom: 10px;
-    }
-
-    .legend {
-        gap: 5px;
-    }
-
-    .legend-item {
-        font-size: 10px;
-        padding: 5px 8px;
-    }
-
-    .legend-color {
-        width: 8px;
-        height: 8px;
-        margin-right: 4px;
-    }
-
-    /* 弹窗移动端重大优化 */
-    .modal-overlay {
-        padding: 0;
-        align-items: flex-end;
-    }
-
+    
+    .element .atomic-number { font-size: 8px; top: 2px; left: 3px; }
+    .element .symbol { font-size: 18px; margin-top: 2px; }
+    .element .name { font-size: 9px; }
+    .element .detail-val { font-size: 7px; bottom: 2px; right: 3px; }
+    .element:hover { transform: scale(1.1) !important; }
+    
+    .legend-wrapper { padding: 0 5px; margin-bottom: 10px; }
+    .legend { gap: 5px; }
+    .legend-item { font-size: 10px; padding: 5px 8px; }
+    .legend-color { width: 8px; height: 8px; margin-right: 4px; }
+    
+    .modal-overlay { padding: 0; align-items: flex-end; }
+    
     .hologram-card {
         max-height: 100dvh;
         height: 100dvh;
         border-radius: 16px 16px 0 0;
-        flex-direction: column;
     }
-
-    /* 移动端关闭按钮调整位置 */
+    
     .close-btn {
-        top: 15px;
-        right: 15px;
-        width: 40px;
-        height: 40px;
+        top: 10px; right: 10px;
+        width: 40px; height: 40px;
         background: rgba(0,0,0,0.8);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-
-    /* 移动端放大按钮 */
-    .expand-btn {
-        top: 10px;
-        left: 10px;
-        width: 32px;
-        height: 32px;
-    }
-
-    .expand-btn svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    .atom-visualizer {
-        height: 180px;
-        min-height: 180px;
-        padding-top: env(safe-area-inset-top);
-    }
-
-    .atom-container {
-        width: 150px;
-        height: 150px;
-    }
-
-    .visualizer-hint {
-        font-size: 11px;
-        bottom: 10px;
-    }
-
+    
+    .expand-btn { top: 10px; left: 10px; width: 32px; height: 32px; }
+    .expand-btn svg { width: 16px; height: 16px; }
+    
+    .atom-visualizer { height: 160px; min-height: 160px; }
+    .atom-container { width: 140px; height: 140px; }
+    .visualizer-hint { font-size: 11px; bottom: 8px; }
+    
     .info-panel {
-        padding: 15px 20px;
-        flex: 1;
-        overflow-y: auto;
+        padding: 12px 15px;
         padding-bottom: 80px;
-        -webkit-overflow-scrolling: touch;
     }
-
-    .header-row {
-        margin-bottom: 12px;
-        padding-bottom: 10px;
-        gap: 8px;
-        padding-right: 0;
-    }
-
-    .big-symbol {
-        font-size: 36px;
-        margin-right: 10px;
-    }
-
-    .big-name {
-        font-size: 18px;
-    }
-
-    #m-en-name {
-        font-size: 14px !important;
-    }
-
-    .category-tag {
-        font-size: 10px;
-        padding: 4px 8px;
-        margin-left: 0;
-    }
-
-    /* 电子排布修复 */
-    .config-box {
-        padding: 10px 12px;
-        margin-bottom: 15px;
-        overflow-x: auto;
-    }
-
-    .config-label {
-        font-size: 11px;
-    }
-
-    .config-text {
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    #m-config-shell {
-        font-size: 11px !important;
-    }
-
-    .info-section {
-        margin-bottom: 15px;
-    }
-
-    .info-section h3 {
-        font-size: 12px;
-        margin-bottom: 8px;
-    }
-
-    .props-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-
-    .prop-item {
-        padding: 6px 8px;
-    }
-
-    .prop-item label {
-        font-size: 10px;
-    }
-
-    .prop-item span {
-        font-size: 13px;
-    }
-
-    .valence-tags {
-        gap: 6px;
-    }
-
-    .valence-tag {
-        font-size: 13px;
-        padding: 3px 10px;
-    }
-
-    .isotope-tags {
-        gap: 6px;
-    }
-
-    .isotope-tag {
-        font-size: 11px;
-        padding: 3px 8px;
-    }
-
-    /* 放大视图移动端适配 */
-    .expanded-atom-overlay {
-        padding: 0;
-    }
-
+    
+    .header-row { margin-bottom: 10px; padding-bottom: 10px; gap: 10px; padding-right: 0; }
+    .big-symbol { font-size: 36px; }
+    .big-name { font-size: 16px; margin-bottom: 6px; }
+    .en-name { font-size: 12px; }
+    .header-meta { gap: 5px; }
+    .category-tag, .phase-tag, .block-tag { font-size: 10px; padding: 3px 8px; }
+    
+    .summary-box { padding: 10px 12px; margin-bottom: 12px; }
+    .summary-box p { font-size: 12px; }
+    
+    .tab-nav { margin-bottom: 12px; }
+    .tab-btn { padding: 6px 8px; font-size: 11px; }
+    
+    .info-section { margin-bottom: 15px; }
+    .info-section h3 { font-size: 11px; margin-bottom: 8px; }
+    
+    .config-box { padding: 10px 12px; }
+    .config-text { font-size: 12px; }
+    
+    .props-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .props-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .prop-item { padding: 6px 8px; }
+    .prop-item label { font-size: 9px; }
+    .prop-item span { font-size: 12px; }
+    
+    .valence-tags, .isotope-tags { gap: 6px; }
+    .valence-tag { font-size: 12px; padding: 3px 10px; }
+    .isotope-tag { font-size: 10px; padding: 3px 8px; }
+    
+    .load-media-btn { padding: 20px; }
+    .model-viewer { height: 220px; }
+    
     .expanded-atom-card {
-        width: 100%;
-        height: 100dvh;
-        max-width: none;
-        max-height: none;
+        width: 100%; height: 100dvh;
+        max-width: none; max-height: none;
         border-radius: 0;
     }
-
-    .expanded-atom-header {
-        padding: 15px 50px 15px 15px;
-    }
-
-    .expanded-atom-symbol {
-        font-size: 32px;
-    }
-
-    .expanded-atom-name {
-        font-size: 16px;
-    }
-
-    .expanded-atom-container {
-        width: 280px;
-        height: 280px;
-    }
-
-    .expanded-atom-info {
-        padding: 12px 15px 20px;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .shell-legend {
-        gap: 8px;
-    }
-
-    .shell-legend-item {
-        font-size: 11px;
-        padding: 3px 8px;
-    }
-
-    .expanded-hint {
-        font-size: 11px;
-    }
+    .expanded-atom-header { padding: 15px 50px 15px 15px; }
+    .expanded-atom-symbol { font-size: 32px; }
+    .expanded-atom-name { font-size: 16px; }
+    .expanded-atom-container { width: 280px; height: 280px; }
+    .expanded-atom-info { padding: 12px 15px 20px; flex-direction: column; gap: 10px; }
+    .shell-legend { gap: 8px; }
+    .shell-legend-item { font-size: 11px; padding: 3px 8px; }
 }
 
-/* === 超小屏幕 (小于400px) === */
+/* === 超小屏幕 === */
 @media(max-width: 400px) {
     .periodic-table {
         grid-template-columns: repeat(18, 44px);
         grid-template-rows: repeat(10, 52px);
         gap: 2px;
     }
-
-    .element .atomic-number {
-        font-size: 7px;
-    }
-
-    .element .symbol {
-        font-size: 15px;
-    }
-
-    .element .name {
-        font-size: 8px;
-    }
-
-    .mode-btn {
-        padding: 5px 6px;
-        font-size: 10px;
-    }
-
-    .legend-item {
-        font-size: 9px;
-        padding: 4px 6px;
-    }
-
-    .props-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .expanded-atom-container {
-        width: 240px;
-        height: 240px;
-    }
+    .element .atomic-number { font-size: 7px; }
+    .element .symbol { font-size: 15px; }
+    .element .name { font-size: 8px; }
+    .mode-btn { padding: 5px 6px; font-size: 10px; }
+    .legend-item { font-size: 9px; padding: 4px 6px; }
+    .props-grid { grid-template-columns: 1fr; }
+    .props-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .expanded-atom-container { width: 240px; height: 240px; }
 }
 
-/* === 横屏模式优化 === */
+/* === 横屏模式 === */
 @media(max-height: 500px) and (orientation: landscape) {
-    .rotate-hint {
-        display: none;
-    }
-
-    .control-panel {
-        padding: 8px 15px;
-        flex-direction: row;
-    }
-
+    .rotate-hint { display: none; }
+    .control-panel { padding: 8px 15px; flex-direction: row; }
+    
     .hologram-card {
         flex-direction: row;
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
     }
-
-    .atom-visualizer {
-        width: 35%;
-        height: 100%;
-        min-width: 200px;
-    }
-
-    .info-panel {
-        padding: 15px;
-    }
-
-    .header-row {
-        margin-bottom: 10px;
-        padding-bottom: 8px;
-    }
-
-    .big-symbol {
-        font-size: 32px;
-    }
-
-    .big-name {
-        font-size: 16px;
-    }
-
-    .config-box {
-        margin-bottom: 10px;
-        padding: 8px 10px;
-    }
-
-    .info-section {
-        margin-bottom: 10px;
-    }
-
-    .props-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-    }
-
-    /* 放大视图横屏适配 */
+    
+    .atom-visualizer { width: 30%; height: 100%; min-width: 180px; }
+    .info-panel { padding: 12px 15px; }
+    .header-row { margin-bottom: 8px; padding-bottom: 8px; }
+    .big-symbol { font-size: 28px; }
+    .big-name { font-size: 14px; }
+    .summary-box { margin-bottom: 10px; padding: 8px 10px; }
+    .tab-nav { margin-bottom: 10px; }
+    .info-section { margin-bottom: 10px; }
+    .props-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    
     .expanded-atom-card {
         flex-direction: row;
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
     }
-
-    .expanded-atom-header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: rgba(10, 10, 21, 0.9);
-        z-index: 10;
-    }
-
-    .expanded-atom-wrapper {
-        flex: 1;
-        padding-top: 60px;
-    }
-
-    .expanded-atom-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(10, 10, 21, 0.9);
-    }
-
-    .expanded-atom-container {
-        width: 300px;
-        height: 300px;
-    }
+    .expanded-atom-container { width: 300px; height: 300px; }
 }
