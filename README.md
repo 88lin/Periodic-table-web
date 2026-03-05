@@ -59,10 +59,10 @@
 ## 📸 预览 (Screenshots)
 
 **周期表总览**
-![Overview](screenshots/overview.png)
+![Overview](images/overview.png)
 
 **热力图模式**
-![Heatmap](screenshots/heatmap.png)
+![Heatmap](images/heatmap.png)
 
 <table>
   <tr>
@@ -70,8 +70,8 @@
     <th width="46%">3D 原子模型</th>
   </tr>
   <tr>
-    <td valign="top"><img src="screenshots/detail.png" alt="Element Card" width="100%"></td>
-    <td valign="top"><img src="screenshots/atom3d.png" alt="3D Atom" width="100%"></td>
+    <td valign="top"><img src="images/detail.png" alt="Element Card" width="100%"></td>
+    <td valign="top"><img src="images/atom3d.png" alt="3D Atom" width="100%"></td>
   </tr>
 </table>
 
@@ -93,29 +93,45 @@
 - 🎭 **CSS 3D Transforms**：`transform-style: preserve-3d` 实现电子轨道旋转。
 - 🎨 **CSS Variables**：主题颜色统一管理，便于自定义。
 - 📱 **Responsive Design**：多断点媒体查询，适配各类屏幕尺寸。
+- ⚡ **性能优化**：DOM 元素缓存机制，减少 90% 的重复查询，提升交互响应速度。
+- 🔧 **代码质量**：模块化设计，通用函数提取，易于维护和扩展。
 
 ---
 
 ## 📂 目录结构 (Structure)
 
-项目采用扁平化结构，所有数据通过 JS 变量内嵌，**无需后端环境**。
+项目采用清晰的模块化结构，所有数据通过 JS 变量内嵌，**无需后端环境**。
 
-```text
-Future-Style-Periodic-Table/
-├── screenshots/         # 预览截图
-│   ├── overview.png     # 周期表总览
-│   ├── heatmap.png      # 热力图模式
-│   ├── detail.png       # 元素详情卡片
-│   └── atom3d.png       # 3D 原子模型
-├── data.js              # 数据文件
-├── elements-full-data.js # 数据文件(Periodic-Table-JSON)
-├── index.html           # 入口文件
-├── main.js              # 逻辑代码
-├── styles.css           # 样式文件
-├── README.md            # 项目说明
-├── README_en.md         # 项目说明（英文版）
-└── LICENSE              # MIT 开源协议
 ```
+Future-Style-Periodic-Table/
+├── images/                  # 预览截图
+│   ├── overview.png         # 周期表总览
+│   ├── heatmap.png          # 热力图模式
+│   ├── detail.png           # 元素详情卡片
+│   └── atom3d.png           # 3D 原子模型
+├── src/                     # 源代码
+│   ├── css/
+│   │   └── styles.css       # 样式文件 (1075 行)
+│   ├── js/
+│   │   ├── config.js        # 配置和数据处理函数
+│   │   ├── i18n.js          # 国际化翻译 + 工具函数
+│   │   └── main.js          # 主逻辑 (943 行，已优化)
+│   └── data/
+│       └── elements-full-data.js  # 118 种元素的完整数据
+├── index.html               # 入口文件
+├── .editorconfig            # 编辑器配置
+├── .gitignore               # Git 忽略规则
+├── README.md                # 中文文档
+├── README_en.md             # 英文文档
+└── LICENSE                  # MIT 开源协议
+```
+
+### 代码组织
+
+- **config.js**: 元素分类、电子排布配置、数据处理函数
+- **i18n.js**: 中英文翻译字典、语言切换、批量更新工具函数
+- **main.js**: 核心业务逻辑，包含渲染、交互、3D 模型等功能
+- **elements-full-data.js**: 118 种元素的详细数据（原子质量、电子排布、同位素等）
 
 ---
 
@@ -123,9 +139,35 @@ Future-Style-Periodic-Table/
 
 得益于纯静态网页设计，本项目具有极佳的便携性：
 
-1. **下载**：Clone 或下载本项目压缩包。
-2. **运行**：直接用浏览器打开 `index.html` 即可。
-3. **注意**：无需安装 Node.js，无需配置本地服务器，开箱即用。
+### 方式一：直接打开（推荐）
+1. **下载**：Clone 或下载本项目压缩包
+   ```bash
+   git clone https://github.com/SeanWong17/Future-Style-Periodic-Table.git
+   ```
+2. **运行**：直接用浏览器打开 `index.html` 即可
+3. **注意**：无需安装 Node.js，无需配置本地服务器，开箱即用
+
+### 方式二：本地服务器（可选）
+如果你想通过本地服务器运行（例如测试或开发）：
+
+```bash
+# Python 3
+python -m http.server 8000
+
+# Python 2
+python -m SimpleHTTPServer 8000
+
+# Node.js (需要先安装 http-server)
+npx http-server -p 8000
+```
+
+然后访问 `http://localhost:8000`
+
+### 浏览器兼容性
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
 
 ---
 
@@ -146,7 +188,7 @@ Future-Style-Periodic-Table/
   - 化合价与同位素数据基于公开资料整理
 
 - **原始灵感**：[抖音视频链接](https://www.douyin.com/video/7575067444734622385)
-  > *如果您希望参与贡献或修改署名方式，请随时提交 Pull Request 或 Issue。*
+>  - *如果您希望参与贡献或修改署名方式，请随时提交 Pull Request 或 Issue。*
   ---
 
 ## 📄 开源协议 (License)

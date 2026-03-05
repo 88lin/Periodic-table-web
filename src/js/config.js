@@ -1,3 +1,8 @@
+/**
+ * 配置文件
+ * 包含元素分类、电子排布配置和数据处理函数
+ */
+
 // === 元素分类数据 ===
 const categories = [
     { name: "碱金属", nameEn: "Alkali Metal", color: "#ff5252" }, 

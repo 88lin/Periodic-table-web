@@ -6,9 +6,101 @@ const atomContainer = document.getElementById('atomContainer');
 const expandedAtomModal = document.getElementById('expandedAtomModal');
 const expandedAtomContainer = document.getElementById('expandedAtomContainer');
 
+// === 模态框 DOM 元素缓存（在 init 后初始化）===
+let modalElements = null;
+
+function initModalElements() {
+    modalElements = {
+        // 标签页按钮
+        tabBasic: document.getElementById('tab-basic'),
+        tabPhysical: document.getElementById('tab-physical'),
+        tabChemical: document.getElementById('tab-chemical'),
+        tabHistory: document.getElementById('tab-history'),
+        tabMedia: document.getElementById('tab-media'),
+        
+        // 头部信息
+        symbol: document.getElementById('m-symbol'),
+        name: document.getElementById('m-name'),
+        enName: document.getElementById('m-en-name'),
+        category: document.getElementById('m-cat'),
+        phase: document.getElementById('m-phase'),
+        block: document.getElementById('m-block'),
+        
+        // 简介
+        summary: document.getElementById('m-summary'),
+        summaryBox: document.getElementById('m-summary-box'),
+        
+        // 基础信息标签
+        electronConfigLabel: document.getElementById('electron-config-label'),
+        config: document.getElementById('m-config'),
+        configSemantic: document.getElementById('m-config-semantic'),
+        configShell: document.getElementById('m-config-shell'),
+        
+        valenceLabel: document.getElementById('valence-label'),
+        valence: document.getElementById('m-valence'),
+        
+        isotopesLabel: document.getElementById('isotopes-label'),
+        isotopes: document.getElementById('m-isotopes'),
+        
+        positionLabel: document.getElementById('position-label'),
+        periodLabel: document.getElementById('period-label'),
+        groupLabel: document.getElementById('group-label'),
+        blockLabel: document.getElementById('block-label'),
+        atomicNumLabel: document.getElementById('atomic-num-label'),
+        period: document.getElementById('m-period'),
+        group: document.getElementById('m-group'),
+        blockVal: document.getElementById('m-block-val'),
+        num: document.getElementById('m-num'),
+        
+        // 物理性质
+        appearanceLabel: document.getElementById('appearance-label'),
+        appearance: document.getElementById('m-appearance'),
+        physicalPropsLabel: document.getElementById('physical-props-label'),
+        atomicMassLabel: document.getElementById('atomic-mass-label'),
+        atomicRadiusLabel: document.getElementById('atomic-radius-label'),
+        densityLabel: document.getElementById('density-label'),
+        meltingPointLabel: document.getElementById('melting-point-label'),
+        boilingPointLabel: document.getElementById('boiling-point-label'),
+        molarHeatLabel: document.getElementById('molar-heat-label'),
+        mass: document.getElementById('m-mass'),
+        radius: document.getElementById('m-radius'),
+        density: document.getElementById('m-density'),
+        melt: document.getElementById('m-melt'),
+        boil: document.getElementById('m-boil'),
+        molarHeat: document.getElementById('m-molar-heat'),
+        
+        // 化学性质
+        chemicalPropsLabel: document.getElementById('chemical-props-label'),
+        electronegativityLabel: document.getElementById('electronegativity-label'),
+        electronAffinityLabel: document.getElementById('electron-affinity-label'),
+        en: document.getElementById('m-en'),
+        ea: document.getElementById('m-ea'),
+        ionizationEnergiesLabel: document.getElementById('ionization-energies-label'),
+        ionizationList: document.getElementById('m-ionization-list'),
+        
+        // 历史
+        discoveryLabel: document.getElementById('discovery-label'),
+        discoveredByLabel: document.getElementById('discovered-by-label'),
+        namedByLabel: document.getElementById('named-by-label'),
+        discoveredBy: document.getElementById('m-discovered-by'),
+        namedBy: document.getElementById('m-named-by'),
+        sourceLabel: document.getElementById('source-label'),
+        source: document.getElementById('m-source'),
+        sourceLinkText: document.getElementById('source-link-text'),
+        
+        // 媒体
+        imageLabel: document.getElementById('image-label'),
+        bohrImageLabel: document.getElementById('bohr-image-label'),
+        loadImageText: document.getElementById('load-image-text'),
+        loadBohrImageText: document.getElementById('load-bohr-image-text'),
+        
+        // 其他
+        visualizerHint: document.getElementById('visualizer-hint')
+    };
+}
+
 // === 状态变量 ===
 let currentActiveCategory = null;
-let currentLanguage = 'zh';
 let currentTab = 'basic';
 let rotX = 0;
 let rotY = 0;
@@ -35,193 +127,7 @@ let bohrImageTimeout = null;
 // 超时时间（毫秒）
 const LOAD_TIMEOUT = 5000;
 
-// === 语言翻译 ===
-const translations = {
-    zh: {
-        'periodic-table-title': '元素周期表',
-        'standard': '标准',
-        'radius': '半径',
-        'electronegativity': '电负性',
-        'ionization-energy': '电离能',
-        'melting-point': '熔点',
-        'boiling-point': '沸点',
-        'density': '密度',
-        'search-placeholder': '查找元素...',
-        'rotate-hint': '💡 横屏查看效果更佳',
-        'drag-rotate': '拖拽旋转视角',
-        'expanded-hint': '拖拽旋转 · 滚轮缩放',
-        
-        // 标签页
-        'tab-basic': '基础',
-        'tab-physical': '物理',
-        'tab-chemical': '化学',
-        'tab-history': '历史',
-        'tab-media': '媒体',
-        
-        // 基础信息
-        'electron-configuration': '电子排布',
-        'common-oxidation-states': '常见化合价',
-        'isotopes': '同位素 (● 稳定)',
-        'position': '周期表位置',
-        'period': '周期',
-        'group': '族',
-        'block': '区块',
-        'atomic-number': '原子序数',
-        
-        // 物理性质
-        'appearance': '外观',
-        'physical-properties': '物理性质',
-        'atomic-mass': '相对原子质量',
-        'atomic-radius': '原子半径 (pm)',
-        'density-unit': '密度 (g/cm³)',
-        'melting-point-k': '熔点 (K)',
-        'boiling-point-k': '沸点 (K)',
-        'molar-heat': '摩尔热容 (J/mol·K)',
-        
-        // 化学性质
-        'chemical-properties': '化学性质',
-        'electronegativity-pauling': '电负性 (鲍林)',
-        'electron-affinity': '电子亲和能 (kJ/mol)',
-        'ionization-energies': '电离能 (kJ/mol)',
-        'ionization-first': '第1电离能',
-        'ionization-second': '第2电离能',
-        'ionization-third': '第3电离能',
-        'ionization-nth': '第{n}电离能',
-        
-        // 历史
-        'discovery': '发现',
-        'discovered-by': '发现者',
-        'named-by': '命名者',
-        'source': '参考资料',
-        
-        // 媒体
-        'element-image': '实物图片',
-        'bohr-image': '玻尔模型图',
-        'load-image': '加载实物图片',
-        'load-bohr-image': '加载玻尔模型图',
-        'loading': '加载中...',
-        'load-failed': '加载失败，点击重试',
-        'load-timeout': '加载超时，点击重试',
-        'no-resource': '暂无资源',
-        
-        // 其他
-        'layers': '电子层',
-        'no-data': '暂无数据',
-        'shell-prefix': '第',
-        'shell-suffix': '层',
-        'electrons-unit': '个电子',
-        'valence-shell': '(价电子层)',
-        'lanthanides': '镧系',
-        'actinides': '锕系',
-        
-        // 分类
-        'alkali-metal': '碱金属',
-        'alkaline-earth-metal': '碱土金属',
-        'transition-metal': '过渡金属',
-        'post-transition-metal': '后过渡金属',
-        'metalloid': '类金属',
-        'nonmetal': '非金属',
-        'halogen': '卤素',
-        'noble-gas': '稀有气体',
-        'lanthanide': '镧系',
-        'actinide': '锕系'
-    },
-    en: {
-        'periodic-table-title': 'Periodic Table',
-        'standard': 'Standard',
-        'radius': 'Radius',
-        'electronegativity': 'Electronegativity',
-        'ionization-energy': 'Ionization',
-        'melting-point': 'Melting Pt',
-        'boiling-point': 'Boiling Pt',
-        'density': 'Density',
-        'search-placeholder': 'Search elements...',
-        'rotate-hint': '💡 Better view in landscape',
-        'drag-rotate': 'Drag to rotate',
-        'expanded-hint': 'Drag to rotate · Scroll to zoom',
-        
-        'tab-basic': 'Basic',
-        'tab-physical': 'Physical',
-        'tab-chemical': 'Chemical',
-        'tab-history': 'History',
-        'tab-media': 'Media',
-        
-        'electron-configuration': 'Electron Configuration',
-        'common-oxidation-states': 'Common Oxidation States',
-        'isotopes': 'Isotopes (● Stable)',
-        'position': 'Position in Table',
-        'period': 'Period',
-        'group': 'Group',
-        'block': 'Block',
-        'atomic-number': 'Atomic Number',
-        
-        'appearance': 'Appearance',
-        'physical-properties': 'Physical Properties',
-        'atomic-mass': 'Atomic Mass',
-        'atomic-radius': 'Atomic Radius (pm)',
-        'density-unit': 'Density (g/cm³)',
-        'melting-point-k': 'Melting Point (K)',
-        'boiling-point-k': 'Boiling Point (K)',
-        'molar-heat': 'Molar Heat (J/mol·K)',
-        
-        'chemical-properties': 'Chemical Properties',
-        'electronegativity-pauling': 'Electronegativity (Pauling)',
-        'electron-affinity': 'Electron Affinity (kJ/mol)',
-        'ionization-energies': 'Ionization Energies (kJ/mol)',
-        'ionization-first': '1st Ionization',
-        'ionization-second': '2nd Ionization',
-        'ionization-third': '3rd Ionization',
-        'ionization-nth': '{n}th Ionization',
-        
-        'discovery': 'Discovery',
-        'discovered-by': 'Discovered by',
-        'named-by': 'Named by',
-        'source': 'Reference',
-        
-        'element-image': 'Element Image',
-        'bohr-image': 'Bohr Model Image',
-        'load-image': 'Load Image',
-        'load-bohr-image': 'Load Bohr Model',
-        'loading': 'Loading...',
-        'load-failed': 'Failed, click to retry',
-        'load-timeout': 'Timeout, click to retry',
-        'no-resource': 'No Resource',
-        
-        'layers': 'Shells',
-        'no-data': 'No data',
-        'shell-prefix': 'Shell ',
-        'shell-suffix': '',
-        'electrons-unit': ' electrons',
-        'valence-shell': '(Valence)',
-        'lanthanides': 'Lanthanides',
-        'actinides': 'Actinides',
-        
-        'alkali-metal': 'Alkali Metal',
-        'alkaline-earth-metal': 'Alkaline Earth',
-        'transition-metal': 'Transition Metal',
-        'post-transition-metal': 'Post-transition',
-        'metalloid': 'Metalloid',
-        'nonmetal': 'Nonmetal',
-        'halogen': 'Halogen',
-        'noble-gas': 'Noble Gas',
-        'lanthanide': 'Lanthanide',
-        'actinide': 'Actinide'
-    }
-};
-
 // === 辅助函数 ===
-function t(key) {
-    return translations[currentLanguage][key] || key;
-}
-
-function getElementName(element) {
-    return currentLanguage === 'zh' ? element.name : element.enName;
-}
-
-function getCategoryName(category) {
-    return currentLanguage === 'zh' ? category.name : category.nameEn;
-}
-
 function formatValue(val, fallback = '—') {
     if (val === null || val === undefined || val === 0 || val === '') {
         return fallback;
@@ -387,6 +293,9 @@ function init() {
         return;
     }
 
+    // 初始化模态框 DOM 元素缓存
+    initModalElements();
+
     renderLegend();
     renderTable();
     initDragControl();
@@ -528,16 +437,18 @@ function setLanguage(lang) {
 
 // === 更新UI语言 ===
 function updateUILanguage() {
-    document.getElementById('main-title').innerText = t('periodic-table-title');
-    document.getElementById('mode-standard').innerText = t('standard');
-    document.getElementById('mode-radius').innerText = t('radius');
-    document.getElementById('mode-electronegativity').innerText = t('electronegativity');
-    document.getElementById('mode-ionization').innerText = t('ionization-energy');
-    document.getElementById('mode-melting').innerText = t('melting-point');
-    document.getElementById('mode-boiling').innerText = t('boiling-point');
-    document.getElementById('mode-density').innerText = t('density');
+    updateElementTranslations({
+        'main-title': 'periodic-table-title',
+        'mode-standard': 'standard',
+        'mode-radius': 'radius',
+        'mode-electronegativity': 'electronegativity',
+        'mode-ionization': 'ionization-energy',
+        'mode-melting': 'melting-point',
+        'mode-boiling': 'boiling-point',
+        'mode-density': 'density',
+        'rotate-hint': 'rotate-hint'
+    });
     document.getElementById('searchInput').placeholder = t('search-placeholder');
-    document.getElementById('rotate-hint').innerText = t('rotate-hint');
 }
 
 // === 标签页切换 ===
@@ -565,111 +476,126 @@ function showModal(data) {
     currentBohrImageUrl = null;
     resetMediaContainers();
 
+    const m = modalElements; // 简化引用
+
     // 更新标签页按钮文字
-    document.getElementById('tab-basic').innerText = t('tab-basic');
-    document.getElementById('tab-physical').innerText = t('tab-physical');
-    document.getElementById('tab-chemical').innerText = t('tab-chemical');
-    document.getElementById('tab-history').innerText = t('tab-history');
-    document.getElementById('tab-media').innerText = t('tab-media');
+    updateElementTranslations({
+        'tab-basic': 'tab-basic',
+        'tab-physical': 'tab-physical',
+        'tab-chemical': 'tab-chemical',
+        'tab-history': 'tab-history',
+        'tab-media': 'tab-media'
+    });
 
     // 头部信息
-    document.getElementById('m-symbol').innerText = data.sym;
-    document.getElementById('m-symbol').style.color = data.cat.color;
-    document.getElementById('m-name').innerText = getElementName(data);
-    document.getElementById('m-en-name').innerText = currentLanguage === 'zh' ? data.enName : data.name;
-    document.getElementById('m-cat').innerText = currentLanguage === 'zh' ? (data.category || getCategoryName(data.cat)) : (data.categoryEn || getCategoryName(data.cat));
-    document.getElementById('m-cat').style.borderColor = data.cat.color;
-    document.getElementById('m-cat').style.color = data.cat.color;
-    document.getElementById('m-phase').innerText = currentLanguage === 'zh' ? (data.phase || '—') : (data.phaseEn || '—');
-    document.getElementById('m-block').innerText = data.block ? data.block.toUpperCase() : '—';
+    m.symbol.innerText = data.sym;
+    m.symbol.style.color = data.cat.color;
+    m.name.innerText = getElementName(data);
+    m.enName.innerText = currentLanguage === 'zh' ? data.enName : data.name;
+    m.category.innerText = currentLanguage === 'zh' ? (data.category || getCategoryName(data.cat)) : (data.categoryEn || getCategoryName(data.cat));
+    m.category.style.borderColor = data.cat.color;
+    m.category.style.color = data.cat.color;
+    m.phase.innerText = currentLanguage === 'zh' ? (data.phase || '—') : (data.phaseEn || '—');
+    m.block.innerText = data.block ? data.block.toUpperCase() : '—';
 
     // 简介
     const summary = currentLanguage === 'zh' ? data.summary : data.summaryEn;
-    document.getElementById('m-summary').innerText = summary || t('no-data');
-    document.getElementById('m-summary-box').style.display = summary ? 'block' : 'none';
+    m.summary.innerText = summary || t('no-data');
+    m.summaryBox.style.display = summary ? 'block' : 'none';
 
     // === 基础信息标签页 ===
-    document.getElementById('electron-config-label').innerText = t('electron-configuration');
+    m.electronConfigLabel.innerText = t('electron-configuration');
     
     // 电子排布 - 使用数据中的配置或计算
     const configDisplay = data.electronConfig || getElectronData(data.idx).str.replace(/<sup>/g, '').replace(/<\/sup>/g, '');
-    document.getElementById('m-config').innerHTML = configDisplay.replace(/(\d)([spdf])(\d+)/g, '$1$2<sup>$3</sup>');
-    document.getElementById('m-config-semantic').innerText = data.electronConfigSemantic || '';
+    m.config.innerHTML = configDisplay.replace(/(\d)([spdf])(\d+)/g, '$1$2<sup>$3</sup>');
+    m.configSemantic.innerText = data.electronConfigSemantic || '';
     
     const shellsDisplay = data.shells.length > 0 ? data.shells : getElectronData(data.idx).shells;
-    document.getElementById('m-config-shell').innerText = `${t('layers')}: ${shellsDisplay.join(' - ')}`;
+    m.configShell.innerText = `${t('layers')}: ${shellsDisplay.join(' - ')}`;
 
     // 化合价
-    document.getElementById('valence-label').innerText = t('common-oxidation-states');
-    const valenceContainer = document.getElementById('m-valence');
-    valenceContainer.innerHTML = '';
+    m.valenceLabel.innerText = t('common-oxidation-states');
+    m.valence.innerHTML = '';
     if (data.valence && data.valence.length > 0) {
         data.valence.forEach(v => {
             const tag = document.createElement('span');
             tag.className = 'valence-tag';
             tag.textContent = v;
-            valenceContainer.appendChild(tag);
+            m.valence.appendChild(tag);
         });
     } else {
-        valenceContainer.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        m.valence.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
     }
 
     // 同位素
-    document.getElementById('isotopes-label').innerText = t('isotopes');
-    const isotopeContainer = document.getElementById('m-isotopes');
-    isotopeContainer.innerHTML = '';
+    m.isotopesLabel.innerText = t('isotopes');
+    m.isotopes.innerHTML = '';
     if (data.isotopes && data.isotopes.length > 0) {
         data.isotopes.forEach(iso => {
             const tag = document.createElement('span');
             tag.className = `isotope-tag ${iso.s ? 'isotope-stable' : ''}`;
             tag.innerHTML = `<span class="mass-num">${iso.m}</span>${data.sym}${iso.s ? ' ●' : ''}`;
-            isotopeContainer.appendChild(tag);
+            m.isotopes.appendChild(tag);
         });
     } else {
-        isotopeContainer.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        m.isotopes.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
     }
 
     // 位置信息
-    document.getElementById('position-label').innerText = t('position');
-    document.getElementById('period-label').innerText = t('period');
-    document.getElementById('group-label').innerText = t('group');
-    document.getElementById('block-label').innerText = t('block');
-    document.getElementById('atomic-num-label').innerText = t('atomic-number');
-    document.getElementById('m-period').innerText = formatValue(data.period);
-    document.getElementById('m-group').innerText = formatValue(data.group);
-    document.getElementById('m-block-val').innerText = data.block ? data.block.toUpperCase() : '—';
-    document.getElementById('m-num').innerText = data.idx;
+    updateElementTranslations({
+        'position-label': 'position',
+        'period-label': 'period',
+        'group-label': 'group',
+        'block-label': 'block',
+        'atomic-num-label': 'atomic-number'
+    });
+    
+    updateElementTexts({
+        'm-period': formatValue(data.period),
+        'm-group': formatValue(data.group),
+        'm-block-val': data.block ? data.block.toUpperCase() : '—',
+        'm-num': data.idx
+    });
 
     // === 物理性质标签页 ===
-    document.getElementById('appearance-label').innerText = t('appearance');
-    document.getElementById('m-appearance').innerText = currentLanguage === 'zh' ? (data.appearance || t('no-data')) : (data.appearanceEn || t('no-data'));
+    m.appearanceLabel.innerText = t('appearance');
+    m.appearance.innerText = currentLanguage === 'zh' ? (data.appearance || t('no-data')) : (data.appearanceEn || t('no-data'));
 
-    document.getElementById('physical-props-label').innerText = t('physical-properties');
-    document.getElementById('atomic-mass-label').innerText = t('atomic-mass');
-    document.getElementById('atomic-radius-label').innerText = t('atomic-radius');
-    document.getElementById('density-label').innerText = t('density-unit');
-    document.getElementById('melting-point-label').innerText = t('melting-point-k');
-    document.getElementById('boiling-point-label').innerText = t('boiling-point-k');
-    document.getElementById('molar-heat-label').innerText = t('molar-heat');
+    updateElementTranslations({
+        'physical-props-label': 'physical-properties',
+        'atomic-mass-label': 'atomic-mass',
+        'atomic-radius-label': 'atomic-radius',
+        'density-label': 'density-unit',
+        'melting-point-label': 'melting-point-k',
+        'boiling-point-label': 'boiling-point-k',
+        'molar-heat-label': 'molar-heat'
+    });
 
-    document.getElementById('m-mass').innerText = formatValue(data.mass);
-    document.getElementById('m-radius').innerText = formatValue(data.radius);
-    document.getElementById('m-density').innerText = formatValue(data.density);
-    document.getElementById('m-melt').innerText = formatValue(data.melt);
-    document.getElementById('m-boil').innerText = formatValue(data.boil);
-    document.getElementById('m-molar-heat').innerText = formatValue(data.molarHeat);
+    updateElementTexts({
+        'm-mass': formatValue(data.mass),
+        'm-radius': formatValue(data.radius),
+        'm-density': formatValue(data.density),
+        'm-melt': formatValue(data.melt),
+        'm-boil': formatValue(data.boil),
+        'm-molar-heat': formatValue(data.molarHeat)
+    });
 
     // === 化学性质标签页 ===
-    document.getElementById('chemical-props-label').innerText = t('chemical-properties');
-    document.getElementById('electronegativity-label').innerText = t('electronegativity-pauling');
-    document.getElementById('electron-affinity-label').innerText = t('electron-affinity');
-    document.getElementById('m-en').innerText = formatValue(data.en);
-    document.getElementById('m-ea').innerText = formatValue(data.electronAffinity);
+    updateElementTranslations({
+        'chemical-props-label': 'chemical-properties',
+        'electronegativity-label': 'electronegativity-pauling',
+        'electron-affinity-label': 'electron-affinity'
+    });
+    
+    updateElementTexts({
+        'm-en': formatValue(data.en),
+        'm-ea': formatValue(data.electronAffinity)
+    });
 
     // 电离能列表
-    document.getElementById('ionization-energies-label').innerText = t('ionization-energies');
-    const ionizationList = document.getElementById('m-ionization-list');
-    ionizationList.innerHTML = '';
+    m.ionizationEnergiesLabel.innerText = t('ionization-energies');
+    m.ionizationList.innerHTML = '';
     if (data.ionizationEnergies && data.ionizationEnergies.length > 0) {
         data.ionizationEnergies.forEach((ie, idx) => {
             const item = document.createElement('div');
@@ -680,41 +606,45 @@ function showModal(data) {
             else if (idx === 2) label = t('ionization-third');
             else label = t('ionization-nth').replace('{n}', idx + 1);
             item.innerHTML = `<span class="ion-label">${label}</span><span class="ion-value">${formatValue(ie)}</span>`;
-            ionizationList.appendChild(item);
+            m.ionizationList.appendChild(item);
         });
     } else {
-        ionizationList.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        m.ionizationList.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
     }
 
     // === 历史标签页 ===
-    document.getElementById('discovery-label').innerText = t('discovery');
-    document.getElementById('discovered-by-label').innerText = t('discovered-by');
-    document.getElementById('named-by-label').innerText = t('named-by');
-    document.getElementById('m-discovered-by').innerText = currentLanguage === 'zh' ? (data.discoveredBy || '—') : (data.discoveredByEn || '—');
-    document.getElementById('m-named-by').innerText = currentLanguage === 'zh' ? (data.namedBy || '—') : (data.namedByEn || '—');
+    updateElementTranslations({
+        'discovery-label': 'discovery',
+        'discovered-by-label': 'discovered-by',
+        'named-by-label': 'named-by',
+        'source-label': 'source'
+    });
+    
+    m.discoveredBy.innerText = currentLanguage === 'zh' ? (data.discoveredBy || '—') : (data.discoveredByEn || '—');
+    m.namedBy.innerText = currentLanguage === 'zh' ? (data.namedBy || '—') : (data.namedByEn || '—');
 
-    document.getElementById('source-label').innerText = t('source');
-    const sourceLink = document.getElementById('m-source');
     const sourceUrl = currentLanguage === 'zh' ? data.source : data.sourceEn;
     if (sourceUrl) {
-        sourceLink.href = sourceUrl;
-        sourceLink.style.display = 'inline-flex';
+        m.source.href = sourceUrl;
+        m.source.style.display = 'inline-flex';
     } else {
-        sourceLink.style.display = 'none';
+        m.source.style.display = 'none';
     }
-    document.getElementById('source-link-text').innerText = 'Wikipedia';
+    m.sourceLinkText.innerText = 'Wikipedia';
 
     // === 媒体标签页 ===
-    document.getElementById('image-label').innerText = t('element-image');
-    document.getElementById('bohr-image-label').innerText = t('bohr-image');
-    document.getElementById('load-image-text').innerText = t('load-image');
-    document.getElementById('load-bohr-image-text').innerText = t('load-bohr-image');
+    updateElementTranslations({
+        'image-label': 'element-image',
+        'bohr-image-label': 'bohr-image',
+        'load-image-text': 'load-image',
+        'load-bohr-image-text': 'load-bohr-image'
+    });
 
     // 检查资源可用性并更新按钮状态
     updateMediaButtonState('load-image-btn', 'load-image-text', data.image?.url, t('load-image'));
     updateMediaButtonState('load-bohr-image-btn', 'load-bohr-image-text', data.bohrModelImage, t('load-bohr-image'));
 
-    document.getElementById('visualizer-hint').innerText = t('drag-rotate');
+    m.visualizerHint.innerText = t('drag-rotate');
 
     render3DAtom(data.idx);
     switchTab('basic');
