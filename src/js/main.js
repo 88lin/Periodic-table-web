@@ -1,3 +1,6 @@
+;(function() {
+'use strict';
+
 // === DOM 元素引用 ===
 const table = document.getElementById('table');
 const legend = document.getElementById('legend');
@@ -152,19 +155,23 @@ function clearAllTimeouts() {
 
 // === 渲染图例 ===
 function renderLegend() {
-    legend.innerHTML = '';
+    legend.textContent = '';
     categories.forEach((c, i) => {
         const btn = document.createElement('div');
         btn.className = 'legend-item';
-        btn.innerHTML = `<div class="legend-color" style="background:${c.color}"></div>${getCategoryName(c)}`;
-        btn.onclick = () => toggleCategory(i, btn);
+        var colorDot = document.createElement('div');
+        colorDot.className = 'legend-color';
+        colorDot.style.background = c.color;
+        btn.appendChild(colorDot);
+        btn.appendChild(document.createTextNode(getCategoryName(c)));
+        btn.addEventListener('click', function() { toggleCategory(i, btn); });
         legend.appendChild(btn);
     });
 }
 
 // === 渲染元素表格 ===
 function renderTable() {
-    table.innerHTML = '';
+    table.textContent = '';
 
     elements.forEach((e, i) => {
         const [r, c] = getPos(e.idx);
@@ -175,13 +182,23 @@ function renderTable() {
         el.dataset.idx = e.idx;
         el.style.borderColor = e.cat.color;
 
-        el.innerHTML = `
-            <div class="atomic-number">${e.idx}</div>
-            <div class="symbol" style="color:${e.cat.color}">${e.sym}</div>
-            <div class="name">${getElementName(e)}</div>
-            <div class="detail-val"></div>
-        `;
-        el.onclick = () => showModal(e);
+        var numDiv = document.createElement('div');
+        numDiv.className = 'atomic-number';
+        numDiv.textContent = e.idx;
+        var symDiv = document.createElement('div');
+        symDiv.className = 'symbol';
+        symDiv.style.color = e.cat.color;
+        symDiv.textContent = e.sym;
+        var nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.textContent = getElementName(e);
+        var detailDiv = document.createElement('div');
+        detailDiv.className = 'detail-val';
+        el.appendChild(numDiv);
+        el.appendChild(symDiv);
+        el.appendChild(nameDiv);
+        el.appendChild(detailDiv);
+        el.addEventListener('click', function() { showModal(e); });
 
         setTimeout(() => el.classList.add('visible'), i * 5);
         table.appendChild(el);
@@ -202,15 +219,20 @@ function renderTable() {
         const color = categories[p.catIdx].color;
         el.style.borderColor = color;
 
-        el.innerHTML = `
-            <div class="range-num" style="color:${color}">${p.sym}</div>
-            <div class="name">${p.name}</div>
-        `;
+        var rangeDiv = document.createElement('div');
+        rangeDiv.className = 'range-num';
+        rangeDiv.style.color = color;
+        rangeDiv.textContent = p.sym;
+        var nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.textContent = p.name;
+        el.appendChild(rangeDiv);
+        el.appendChild(nameDiv);
 
-        el.onclick = () => {
+        el.addEventListener('click', function() {
             const btns = document.querySelectorAll('.legend-item');
             if (btns[p.catIdx]) btns[p.catIdx].click();
-        };
+        });
 
         setTimeout(() => el.classList.add('visible'), 600);
         table.appendChild(el);
@@ -283,6 +305,48 @@ function getElectronData(Z) {
     return { str: configStr, shells: shells };
 }
 
+// === 绑定事件 ===
+function bindEvents() {
+    // Mode buttons
+    document.querySelectorAll('.mode-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { setMode(btn.dataset.mode); });
+    });
+
+    // Language buttons
+    document.getElementById('lang-zh').addEventListener('click', function() { setLanguage('zh'); });
+    document.getElementById('lang-en').addEventListener('click', function() { setLanguage('en'); });
+
+    // Close buttons
+    document.querySelectorAll('.close-btn').forEach(function(btn) {
+        if (btn.closest('.expanded-atom-overlay')) {
+            btn.addEventListener('click', closeExpandedAtom);
+        } else {
+            btn.addEventListener('click', closeModal);
+        }
+    });
+
+    // Expand button
+    document.querySelector('.expand-btn')?.addEventListener('click', openExpandedAtom);
+
+    // Tab buttons
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        var tabId = btn.id.replace('tab-', '');
+        btn.addEventListener('click', function() { switchTab(tabId); });
+    });
+
+    // Media buttons
+    document.getElementById('load-image-btn').addEventListener('click', loadElementImage);
+    document.getElementById('load-bohr-image-btn').addEventListener('click', loadBohrImage);
+
+    // Modal overlay click-to-close
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+    expandedAtomModal.addEventListener('click', function(e) {
+        if (e.target === expandedAtomModal) closeExpandedAtom();
+    });
+}
+
 // === 初始化 ===
 function init() {
     // 处理元素数据
@@ -295,6 +359,8 @@ function init() {
 
     // 初始化模态框 DOM 元素缓存
     initModalElements();
+
+    bindEvents();
 
     renderLegend();
     renderTable();
@@ -337,10 +403,10 @@ function toggleCategory(catId, btn) {
                     el.style.filter = 'grayscale(100%)';
                 }
             } else if (el.classList.contains('placeholder')) {
-                const isRelated = (catId === 8 && el.querySelector('.name').innerText.includes('镧')) ||
-                                  (catId === 9 && el.querySelector('.name').innerText.includes('锕')) ||
-                                  (catId === 8 && el.querySelector('.name').innerText.includes('Lanthan')) ||
-                                  (catId === 9 && el.querySelector('.name').innerText.includes('Actin'));
+                const isRelated = (catId === 8 && el.querySelector('.name').textContent.includes('镧')) ||
+                                  (catId === 9 && el.querySelector('.name').textContent.includes('锕')) ||
+                                  (catId === 8 && el.querySelector('.name').textContent.includes('Lanthan')) ||
+                                  (catId === 9 && el.querySelector('.name').textContent.includes('Actin'));
                 el.style.opacity = isRelated ? '1' : '0.3';
             }
         });
@@ -356,7 +422,7 @@ function setMode(mode) {
     const btns = document.querySelectorAll('.mode-btn');
 
     btns.forEach(b => b.classList.remove('active'));
-    document.querySelector(`button[onclick="setMode('${mode}')"]`)?.classList.add('active');
+    document.querySelector('.mode-btn[data-mode="' + mode + '"]')?.classList.add('active');
 
     if (mode === 'default') {
         table.classList.remove('heatmap-active');
@@ -372,7 +438,7 @@ function setMode(mode) {
             el.querySelector('.symbol').style.color = data.cat.color;
             el.style.opacity = '1';
             el.style.filter = 'none';
-            el.querySelector('.detail-val').innerText = '';
+            el.querySelector('.detail-val').textContent = '';
         });
         return;
     }
@@ -404,14 +470,14 @@ function setMode(mode) {
         if (!val || val === 0) {
             el.style.background = '#222';
             el.style.borderColor = '#444';
-            displayDiv.innerText = '-';
+            displayDiv.textContent = '-';
         } else {
             let ratio = (val - minVal) / (maxVal - minVal);
             let hue = 240 - (ratio * 240);
             el.style.background = `hsla(${hue}, 70%, 40%, 0.8)`;
             el.style.borderColor = `hsla(${hue}, 100%, 70%, 1)`;
             el.querySelector('.symbol').style.color = '#fff';
-            displayDiv.innerText = formatValue(val);
+            displayDiv.textContent = formatValue(val);
         }
     });
 }
@@ -488,35 +554,35 @@ function showModal(data) {
     });
 
     // 头部信息
-    m.symbol.innerText = data.sym;
+    m.symbol.textContent = data.sym;
     m.symbol.style.color = data.cat.color;
-    m.name.innerText = getElementName(data);
-    m.enName.innerText = currentLanguage === 'zh' ? data.enName : data.name;
-    m.category.innerText = currentLanguage === 'zh' ? (data.category || getCategoryName(data.cat)) : (data.categoryEn || getCategoryName(data.cat));
+    m.name.textContent = getElementName(data);
+    m.enName.textContent = currentLanguage === 'zh' ? data.enName : data.name;
+    m.category.textContent = currentLanguage === 'zh' ? (data.category || getCategoryName(data.cat)) : (data.categoryEn || getCategoryName(data.cat));
     m.category.style.borderColor = data.cat.color;
     m.category.style.color = data.cat.color;
-    m.phase.innerText = currentLanguage === 'zh' ? (data.phase || '—') : (data.phaseEn || '—');
-    m.block.innerText = data.block ? data.block.toUpperCase() : '—';
+    m.phase.textContent = currentLanguage === 'zh' ? (data.phase || '—') : (data.phaseEn || '—');
+    m.block.textContent = data.block ? data.block.toUpperCase() : '—';
 
     // 简介
     const summary = currentLanguage === 'zh' ? data.summary : data.summaryEn;
-    m.summary.innerText = summary || t('no-data');
+    m.summary.textContent = summary || t('no-data');
     m.summaryBox.style.display = summary ? 'block' : 'none';
 
     // === 基础信息标签页 ===
-    m.electronConfigLabel.innerText = t('electron-configuration');
+    m.electronConfigLabel.textContent = t('electron-configuration');
     
     // 电子排布 - 使用数据中的配置或计算
     const configDisplay = data.electronConfig || getElectronData(data.idx).str.replace(/<sup>/g, '').replace(/<\/sup>/g, '');
     m.config.innerHTML = configDisplay.replace(/(\d)([spdf])(\d+)/g, '$1$2<sup>$3</sup>');
-    m.configSemantic.innerText = data.electronConfigSemantic || '';
+    m.configSemantic.textContent = data.electronConfigSemantic || '';
     
     const shellsDisplay = data.shells.length > 0 ? data.shells : getElectronData(data.idx).shells;
-    m.configShell.innerText = `${t('layers')}: ${shellsDisplay.join(' - ')}`;
+    m.configShell.textContent = `${t('layers')}: ${shellsDisplay.join(' - ')}`;
 
     // 化合价
-    m.valenceLabel.innerText = t('common-oxidation-states');
-    m.valence.innerHTML = '';
+    m.valenceLabel.textContent = t('common-oxidation-states');
+    m.valence.textContent = '';
     if (data.valence && data.valence.length > 0) {
         data.valence.forEach(v => {
             const tag = document.createElement('span');
@@ -525,21 +591,31 @@ function showModal(data) {
             m.valence.appendChild(tag);
         });
     } else {
-        m.valence.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        var noData = document.createElement('span');
+        noData.className = 'no-data';
+        noData.textContent = t('no-data');
+        m.valence.appendChild(noData);
     }
 
     // 同位素
-    m.isotopesLabel.innerText = t('isotopes');
-    m.isotopes.innerHTML = '';
+    m.isotopesLabel.textContent = t('isotopes');
+    m.isotopes.textContent = '';
     if (data.isotopes && data.isotopes.length > 0) {
         data.isotopes.forEach(iso => {
             const tag = document.createElement('span');
             tag.className = `isotope-tag ${iso.s ? 'isotope-stable' : ''}`;
-            tag.innerHTML = `<span class="mass-num">${iso.m}</span>${data.sym}${iso.s ? ' ●' : ''}`;
+            var massSpan = document.createElement('span');
+            massSpan.className = 'mass-num';
+            massSpan.textContent = iso.m;
+            tag.appendChild(massSpan);
+            tag.appendChild(document.createTextNode(data.sym + (iso.s ? ' ●' : '')));
             m.isotopes.appendChild(tag);
         });
     } else {
-        m.isotopes.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        var noData = document.createElement('span');
+        noData.className = 'no-data';
+        noData.textContent = t('no-data');
+        m.isotopes.appendChild(noData);
     }
 
     // 位置信息
@@ -559,8 +635,8 @@ function showModal(data) {
     });
 
     // === 物理性质标签页 ===
-    m.appearanceLabel.innerText = t('appearance');
-    m.appearance.innerText = currentLanguage === 'zh' ? (data.appearance || t('no-data')) : (data.appearanceEn || t('no-data'));
+    m.appearanceLabel.textContent = t('appearance');
+    m.appearance.textContent = currentLanguage === 'zh' ? (data.appearance || t('no-data')) : (data.appearanceEn || t('no-data'));
 
     updateElementTranslations({
         'physical-props-label': 'physical-properties',
@@ -594,8 +670,8 @@ function showModal(data) {
     });
 
     // 电离能列表
-    m.ionizationEnergiesLabel.innerText = t('ionization-energies');
-    m.ionizationList.innerHTML = '';
+    m.ionizationEnergiesLabel.textContent = t('ionization-energies');
+    m.ionizationList.textContent = '';
     if (data.ionizationEnergies && data.ionizationEnergies.length > 0) {
         data.ionizationEnergies.forEach((ie, idx) => {
             const item = document.createElement('div');
@@ -605,11 +681,21 @@ function showModal(data) {
             else if (idx === 1) label = t('ionization-second');
             else if (idx === 2) label = t('ionization-third');
             else label = t('ionization-nth').replace('{n}', idx + 1);
-            item.innerHTML = `<span class="ion-label">${label}</span><span class="ion-value">${formatValue(ie)}</span>`;
+            var labelSpan = document.createElement('span');
+            labelSpan.className = 'ion-label';
+            labelSpan.textContent = label;
+            var valueSpan = document.createElement('span');
+            valueSpan.className = 'ion-value';
+            valueSpan.textContent = formatValue(ie);
+            item.appendChild(labelSpan);
+            item.appendChild(valueSpan);
             m.ionizationList.appendChild(item);
         });
     } else {
-        m.ionizationList.innerHTML = `<span class="no-data">${t('no-data')}</span>`;
+        var noData = document.createElement('span');
+        noData.className = 'no-data';
+        noData.textContent = t('no-data');
+        m.ionizationList.appendChild(noData);
     }
 
     // === 历史标签页 ===
@@ -620,8 +706,8 @@ function showModal(data) {
         'source-label': 'source'
     });
     
-    m.discoveredBy.innerText = currentLanguage === 'zh' ? (data.discoveredBy || '—') : (data.discoveredByEn || '—');
-    m.namedBy.innerText = currentLanguage === 'zh' ? (data.namedBy || '—') : (data.namedByEn || '—');
+    m.discoveredBy.textContent = currentLanguage === 'zh' ? (data.discoveredBy || '—') : (data.discoveredByEn || '—');
+    m.namedBy.textContent = currentLanguage === 'zh' ? (data.namedBy || '—') : (data.namedByEn || '—');
 
     const sourceUrl = currentLanguage === 'zh' ? data.source : data.sourceEn;
     if (sourceUrl) {
@@ -630,7 +716,7 @@ function showModal(data) {
     } else {
         m.source.style.display = 'none';
     }
-    m.sourceLinkText.innerText = 'Wikipedia';
+    m.sourceLinkText.textContent = 'Wikipedia';
 
     // === 媒体标签页 ===
     updateElementTranslations({
@@ -644,7 +730,7 @@ function showModal(data) {
     updateMediaButtonState('load-image-btn', 'load-image-text', data.image?.url, t('load-image'));
     updateMediaButtonState('load-bohr-image-btn', 'load-bohr-image-text', data.bohrModelImage, t('load-bohr-image'));
 
-    m.visualizerHint.innerText = t('drag-rotate');
+    m.visualizerHint.textContent = t('drag-rotate');
 
     render3DAtom(data.idx);
     switchTab('basic');
@@ -686,10 +772,10 @@ function updateMediaButtonState(btnId, textId, resourceUrl, defaultText) {
     const textSpan = document.getElementById(textId);
     if (!resourceUrl) {
         btn.classList.add('disabled');
-        textSpan.innerText = t('no-resource');
+        textSpan.textContent = t('no-resource');
     } else {
         btn.classList.remove('disabled');
-        textSpan.innerText = defaultText;
+        textSpan.textContent = defaultText;
     }
 }
 
@@ -697,7 +783,7 @@ function updateMediaButtonState(btnId, textId, resourceUrl, defaultText) {
 function setButtonError(btn, textSpan, message) {
     btn.classList.remove('loading');
     btn.classList.add('error');
-    textSpan.innerText = message;
+    textSpan.textContent = message;
 }
 
 // === 加载实物图片 ===
@@ -716,7 +802,7 @@ function loadElementImage() {
     // 如果是错误状态，允许重试
     btn.classList.remove('error');
     
-    textSpan.innerText = t('loading');
+    textSpan.textContent = t('loading');
     btn.classList.add('loading');
     
     // 记录当前加载的URL
@@ -746,7 +832,7 @@ function loadElementImage() {
         imageTimeout = null;
         btn.style.display = 'none';
         display.style.display = 'block';
-        caption.innerText = currentLanguage === 'zh' ? (currentElementData.image.title || '') : (currentElementData.image.title || '');
+        caption.textContent = currentLanguage === 'zh' ? (currentElementData.image.title || '') : (currentElementData.image.title || '');
     };
 
     img.onerror = () => {
@@ -776,7 +862,7 @@ function loadBohrImage() {
     // 如果是错误状态，允许重试
     btn.classList.remove('error');
     
-    textSpan.innerText = t('loading');
+    textSpan.textContent = t('loading');
     btn.classList.add('loading');
     
     // 记录当前加载的URL
@@ -833,13 +919,13 @@ function closeModal() {
     currentBohrImageUrl = null;
     
     setTimeout(() => {
-        atomContainer.innerHTML = '';
+        atomContainer.textContent = '';
     }, 300);
 }
 
 // === 渲染3D原子模型 ===
 function render3DAtom(Z, container = atomContainer, scale = 1) {
-    container.innerHTML = '';
+    container.textContent = '';
 
     const nucleus = document.createElement('div');
     nucleus.className = 'nucleus';
@@ -1009,14 +1095,14 @@ function openExpandedAtom() {
 // === 更新放大视图信息 ===
 function updateExpandedAtomInfo() {
     const element = elements[currentElementZ - 1];
-    document.getElementById('expanded-symbol').innerText = element.sym;
+    document.getElementById('expanded-symbol').textContent = element.sym;
     document.getElementById('expanded-symbol').style.color = element.cat.color;
-    document.getElementById('expanded-name').innerText = `${element.name} ${element.enName}`;
-    document.getElementById('expanded-hint').innerText = t('expanded-hint');
+    document.getElementById('expanded-name').textContent = `${element.name} ${element.enName}`;
+    document.getElementById('expanded-hint').textContent = t('expanded-hint');
 
     const shells = element?.shells?.length > 0 ? element.shells : getElectronData(currentElementZ).shells;
     const legendContainer = document.getElementById('expanded-shell-legend');
-    legendContainer.innerHTML = '';
+    legendContainer.textContent = '';
 
     shells.forEach((count, idx) => {
         if (count === 0) return;
@@ -1030,10 +1116,12 @@ function updateExpandedAtomInfo() {
         
         const valenceText = isValence ? ` ${t('valence-shell')}` : '';
         
-        item.innerHTML = `
-            <span class="shell-dot ${isValence ? 'valence' : 'inner'}"></span>
-            <span>${shellName}: ${count}${t('electrons-unit')}${valenceText}</span>
-        `;
+        var dot = document.createElement('span');
+        dot.className = 'shell-dot ' + (isValence ? 'valence' : 'inner');
+        var label = document.createElement('span');
+        label.textContent = shellName + ': ' + count + t('electrons-unit') + valenceText;
+        item.appendChild(dot);
+        item.appendChild(label);
         legendContainer.appendChild(item);
     });
 }
@@ -1041,7 +1129,7 @@ function updateExpandedAtomInfo() {
 // === 关闭放大原子视图 ===
 function closeExpandedAtom() {
     expandedAtomModal.classList.remove('open');
-    setTimeout(() => expandedAtomContainer.innerHTML = '', 300);
+    setTimeout(() => expandedAtomContainer.textContent = '', 300);
 }
 
 // === 搜索功能 ===
@@ -1053,7 +1141,7 @@ function initSearch() {
             let match = false;
 
             if (el.classList.contains('placeholder')) {
-                match = el.innerText.toLowerCase().includes(val);
+                match = el.textContent.toLowerCase().includes(val);
             } else if (el.dataset.idx) {
                 const d = elements[el.dataset.idx - 1];
                 match = d.name.includes(val) ||
@@ -1086,14 +1174,7 @@ function initKeyboard() {
     });
 }
 
-// === 弹窗点击背景关闭 ===
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-});
-
-expandedAtomModal.addEventListener('click', (e) => {
-    if (e.target === expandedAtomModal) closeExpandedAtom();
-});
-
 // === 启动应用 ===
 init();
+
+})();

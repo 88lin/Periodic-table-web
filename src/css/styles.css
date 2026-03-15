@@ -35,6 +35,7 @@ body {
         linear-gradient(0deg, rgba(0,243,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0,243,255,0.03) 1px, transparent 1px);
     background-size: 100% 100%, 40px 40px, 40px 40px;
+    will-change: transform;
 }
 
 /* === 导航栏区域 === */
@@ -189,9 +190,10 @@ body {
     padding: 2px;
     opacity: 0;
     transform: scale(0.8);
+    will-change: transform, opacity;
 }
 
-.element.visible { opacity: 1; transform: scale(1); }
+.element.visible { opacity: 1; transform: scale(1); will-change: auto; }
 
 .element:hover {
     transform: scale(1.15) !important;
@@ -307,8 +309,9 @@ body {
     backdrop-filter: blur(8px);
     z-index: 1000;
     display: flex; justify-content: center; align-items: center;
-    opacity: 0; pointer-events: none; transition: 0.3s;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
     padding: 10px;
+    contain: layout style;
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 
@@ -404,6 +407,7 @@ body {
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.1s linear;
+    will-change: transform;
 }
 
 .nucleus {
@@ -418,6 +422,7 @@ body {
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.15);
     transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .electron {
@@ -944,6 +949,7 @@ body {
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.1s linear;
+    will-change: transform;
 }
 
 .expanded-atom-container .nucleus {

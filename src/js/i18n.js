@@ -167,7 +167,7 @@ function getCategoryName(category) {
 function updateElementTranslations(mappings) {
     Object.entries(mappings).forEach(([id, key]) => {
         const el = document.getElementById(id);
-        if (el) el.innerText = t(key);
+        if (el) el.textContent = t(key);
     });
 }
 
@@ -175,6 +175,6 @@ function updateElementTranslations(mappings) {
 function updateElementTexts(mappings) {
     Object.entries(mappings).forEach(([id, text]) => {
         const el = document.getElementById(id);
-        if (el) el.innerText = text;
+        if (el) el.textContent = text;
     });
 }
