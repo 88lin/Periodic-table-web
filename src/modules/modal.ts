@@ -4,7 +4,7 @@ import { formatValue } from '../utils/dom';
 import { getElectronData } from '../config/electron';
 import { getCategoryName } from '../i18n';
 import { render3DAtom } from './atom3d';
-import { resetMediaContainers, updateMediaButtonState } from './media';
+import { loadBohrImage, loadElementImage, resetMediaContainers, updateMediaButtonState } from './media';
 import type { Element } from '../types/element';
 
 function clearAllTimeouts(): void {
@@ -93,6 +93,8 @@ export function showModal(data: Element): void {
   switchTab('basic');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  loadElementImage();
+  loadBohrImage();
 }
 
 function renderBasicTab(data: Element): void {
