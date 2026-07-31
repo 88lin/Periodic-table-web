@@ -82,6 +82,8 @@ export function showModal(data: Element): void {
   appContent.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = 'hidden';
   document.querySelector<HTMLElement>('.hologram-card')!.focus({ preventScroll: true });
+  loadElementImage();
+  loadBohrImage();
 }
 
 function renderModalContent(data: Element): void {
@@ -265,7 +267,7 @@ function renderChemicalTab(data: Element): void {
     data.ionizationEnergies.forEach((ie, idx) => {
       const item = document.createElement('div');
       item.className = 'ionization-item';
-      let label = '';
+      let label: string;
       if (idx === 0) label = t('ionization-first');
       else if (idx === 1) label = t('ionization-second');
       else if (idx === 2) label = t('ionization-third');

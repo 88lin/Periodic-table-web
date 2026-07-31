@@ -136,7 +136,7 @@ Future-Style-Periodic-Table/
 
 ## 🚀 Quick Start
 
-Node.js 18.18 or newer is required for local development.
+Node.js 20.19 or newer is required for local development.
 
 ```bash
 git clone https://github.com/SeanWong17/Future-Style-Periodic-Table.git

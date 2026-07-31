@@ -49,6 +49,21 @@ describe('modal lifecycle', () => {
     expect(document.getElementById('pane-basic')?.hidden).toBe(true);
   });
 
+  it('starts loading available media when the modal opens', () => {
+    showModal(getState().elements[0]);
+
+    const state = getState();
+    const image = state.currentElementData?.image?.url;
+    const bohrImage = state.currentElementData?.bohrModelImage;
+
+    expect(image).toBeTruthy();
+    expect(bohrImage).toBeTruthy();
+    expect(state.currentImageUrl).toBe(image);
+    expect(state.currentBohrImageUrl).toBe(bohrImage);
+    expect(document.getElementById('load-image-btn')?.classList.contains('loading')).toBe(true);
+    expect(document.getElementById('load-bohr-image-btn')?.classList.contains('loading')).toBe(true);
+  });
+
   it('does not let a stale close timer erase a reopened atom model', () => {
     const opener = document.createElement('button');
     document.getElementById('app-content')?.appendChild(opener);
