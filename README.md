@@ -106,7 +106,7 @@
 
 ```
 Future-Style-Periodic-Table/
-├── public/images/           # 预览截图
+├── images/                  # README 预览截图
 ├── src/                     # 源代码
 │   ├── css/
 │   │   └── styles.css       # 样式文件
@@ -136,7 +136,10 @@ Future-Style-Periodic-Table/
 │   ├── utils/
 │   │   └── dom.ts           # DOM 辅助函数
 │   └── main.ts              # 入口：初始化 + 事件绑定
+├── tests/                   # Vitest DOM 与回归测试
 ├── index.html               # 入口 HTML
+├── eslint.config.js         # ESLint 配置
+├── vitest.config.ts         # 测试配置
 ├── package.json             # 依赖管理
 ├── tsconfig.json            # TypeScript 配置
 ├── vite.config.ts           # Vite 构建配置
@@ -165,19 +168,35 @@ npm install
 npm run dev
 ```
 
-然后访问 `http://localhost:5173/Future-Style-Periodic-Table/`
+然后访问 `http://localhost:5173/`
 
 ### 构建部署
 
 ```bash
-# 生产构建
-npm run build
+# 代码检查、测试与生产构建
+npm run check
 
 # 预览构建结果
 npm run preview
 ```
 
 推送到 `main` 分支会通过 GitHub Actions 自动部署到 GitHub Pages。
+
+### Docker 快捷部署
+
+```bash
+# 构建生产镜像
+docker build -t future-style-periodic-table .
+
+# 后台启动，并在主机的 8080 端口提供服务
+docker run -d \
+  --name future-style-periodic-table \
+  --restart unless-stopped \
+  -p 8080:80 \
+  future-style-periodic-table
+```
+
+启动后访问 `http://localhost:8080/`。更新版本时，重新构建镜像并替换容器即可。
 
 ### 浏览器兼容性
 - ✅ Chrome 90+

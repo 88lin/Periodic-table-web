@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/Periodic-table-web/',
+  base: './',
   build: {
     outDir: 'dist',
   },
